@@ -20,7 +20,7 @@
 
       <div class="navbar-menu">
         <div class="navbar-end">
-          <span class="title is-4" >GitHub stars history and comparison</span>
+          <span class="title is-4" >GitHub stars history and charts</span>
           <!--<span class="is-mobile">GI</span>-->
         </div>
       </div>
@@ -28,11 +28,6 @@
 
     </div>
   </nav>
-
-  <!--<div id="nav">-->
-  <!--<router-link to="/">Home</router-link> |-->
-  <!--<router-link to="/about">About</router-link>-->
-  <!--</div>-->
 
 </template>
 

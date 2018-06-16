@@ -1,7 +1,6 @@
 <template>
   <!--<div class="home">-->
     <!--<img src="../assets/logo.png">-->
-    <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
   <!--</div>-->
 
   <!-- Main container -->
@@ -109,13 +108,11 @@
 <script>
 import stacks from "@/services/stacks";
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
 import StarsChart from "@/components/StarsChart.vue";
 
 export default {
   name: "home",
   components: {
-    HelloWorld,
     StarsChart
   },
   data() {
