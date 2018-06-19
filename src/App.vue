@@ -23,19 +23,15 @@ export default {
   methods: {
     initialize: function() {
       const stacks = store.get("stacks");
-      for (const predefinedStackKey of Object.keys(predefinedStacks)) {
-        if (_.has(stacks, predefinedStackKey)) {
-          if (stacks[predefinedStackKey].predefined) {
-            stacks[predefinedStackKey] = Object.assign(
-              {},
-              predefinedStacks[predefinedStackKey]
-            );
-          }
+      for (const predefinedStack of predefinedStacks) {
+        const index = _.findIndex(stacks, { id: predefinedStack.id });
+        if (index < 0) {
+          stacks.push(predefinedStack);
         } else {
-          stacks[predefinedStackKey] = Object.assign(
-            {},
-            predefinedStacks[predefinedStackKey]
-          );
+          const savedStack = stacks[index];
+          if (!savedStack.modified) {
+            stacks[index] = Object.assign({}, predefinedStack);
+          }
         }
       }
       store.set("stacks", stacks);

@@ -6,7 +6,7 @@
 
     <div class="panel-block">
       <p class="control has-icons-left">
-        <input class="input is-small" type="text" placeholder="search">
+        <input v-model="search" class="input is-small" type="text" placeholder="search">
         <span class="icon is-small is-left">
           <i class="mdi mdi-magnify is-medium" aria-hidden="true"/>
         </span>
@@ -14,7 +14,7 @@
     </div>
 
     <a class="panel-block" :class="{ 'is-active': currIndex === index }"
-       v-for="(stack, index) in Object.values(stacks)" :key="stack.name"
+       v-for="(stack, index) in filteredStacks" :key="stack.name"
        @click="selectStackEvent(stack, index)" >
       <span class="panel-icon">
         <i class="mdi mdi-checkbox-blank-circle" aria-hidden="true"/>
@@ -50,7 +50,7 @@ export default {
   computed: {
     filteredStacks() {
       return this.stacks.filter(stack => {
-        return stack.type.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
+        return stack.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
       });
     }
   },

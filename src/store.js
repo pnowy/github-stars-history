@@ -9,7 +9,7 @@ import appConfig from "@/config/app.config";
 Vue.use(Vuex);
 
 const state = {
-  stacks: {}
+  stacks: []
 };
 
 const mutations = make.mutations(state);

@@ -34,7 +34,6 @@
 <script>
 import AvailableStacks from "@/components/AvailableStacks.vue";
 import SelectedStack from "@/components/SelectedStack.vue";
-// @ is an alias to /src
 import StarsChart from "@/components/StarsChart.vue";
 import { sync } from "vuex-pathify";
 
