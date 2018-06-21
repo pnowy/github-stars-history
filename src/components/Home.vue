@@ -11,7 +11,7 @@
         <div class="columns ">
           <div class="column is-one-third ">
 
-            <available-stacks :stacks="stacks" @select-stack="selectStack" />
+            <available-stacks :stacks="stacks" @select-stack="selectStack" @new-stack="newStack" />
 
             <selected-stack v-if="selectedStack" :stack="selectedStack" />
 
@@ -35,7 +35,6 @@
 import AvailableStacks from "@/components/AvailableStacks.vue";
 import SelectedStack from "@/components/SelectedStack.vue";
 import StarsChart from "@/components/StarsChart.vue";
-import { sync } from "vuex-pathify";
 
 export default {
   name: "Home",
@@ -85,11 +84,22 @@ export default {
     };
   },
   computed: {
-    stacks: sync("stacks")
+    stacks() {
+      return this.$store.state.stacks;
+    }
   },
   methods: {
     selectStack(stack) {
       this.selectedStack = stack;
+    },
+    newStack(stackName) {
+      console.log(stackName);
+      const stack = {
+        id: "",
+        name: stackName,
+        repos: []
+      };
+      this.$store.commit("addStack", { stack });
     }
   }
 };

@@ -10,33 +10,9 @@
 <script>
 import AppHeader from "@/components/layout/AppHeader";
 import Home from "@/components/Home";
-import store from "@/store";
-import predefinedStacks from "@/data/stacks";
-import _ from "lodash";
 
 export default {
-  components: { AppHeader, Home },
-  mounted() {
-    this.initialize();
-  },
-
-  methods: {
-    initialize: function() {
-      const stacks = store.get("stacks");
-      for (const predefinedStack of predefinedStacks) {
-        const index = _.findIndex(stacks, { id: predefinedStack.id });
-        if (index < 0) {
-          stacks.push(predefinedStack);
-        } else {
-          const savedStack = stacks[index];
-          if (!savedStack.modified) {
-            stacks[index] = Object.assign({}, predefinedStack);
-          }
-        }
-      }
-      store.set("stacks", stacks);
-    }
-  }
+  components: { AppHeader, Home }
 };
 </script>
 

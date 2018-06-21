@@ -13,6 +13,11 @@
       </p>
     </div>
 
+    <label class="panel-block">
+      <input type="checkbox" v-model="showPredefined" >
+      show predefined stacks
+    </label>
+
     <a class="panel-block" :class="{ 'is-active': currIndex === index }"
        v-for="(stack, index) in filteredStacks" :key="stack.name"
        @click="selectStackEvent(stack, index)" >
@@ -24,40 +29,56 @@
 
     <div class="panel-block">
       <p class="control is-expanded">
-        <input class="input is-small" type="text" placeholder="new stack">
+        <input v-model="newStackName" class="input is-small" type="text" placeholder="new stack">
       </p>
-      <a class="button is-small">add</a>
+      <a class="button is-small" @click="newStackEvent">add</a>
     </div>
 
   </nav>
 </template>
 
 <script>
+import predefinedStacks from "@/data/stacks";
+import { sync } from "vuex-pathify";
+
 export default {
   name: "AvailableStacks",
   props: {
     stacks: {
-      type: Object,
+      type: Array,
       required: true
     }
   },
   data() {
     return {
       currIndex: -1,
-      search: ""
+      search: "",
+      newStackName: null
     };
   },
   computed: {
     filteredStacks() {
-      return this.stacks.filter(stack => {
+      const userStacks = this.stacks.filter(stack => {
         return stack.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
       });
-    }
+      const predefined = predefinedStacks.filter(stack => {
+        return (
+          stack.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1 &&
+          this.showPredefined === true
+        );
+      });
+      return predefined.concat(userStacks);
+    },
+    showPredefined: sync("showPredefined")
   },
   methods: {
     selectStackEvent(stack, index) {
       this.$emit("select-stack", stack);
       this.currIndex = index;
+    },
+    newStackEvent() {
+      this.$emit("new-stack", this.newStackName);
+      this.newStackName = null;
     }
   }
 };

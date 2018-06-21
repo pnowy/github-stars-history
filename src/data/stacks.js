@@ -7,17 +7,20 @@ const stacks = [
       "angular/angular.js",
       "vuejs/vue",
       "facebook/react"
-    ]
+    ],
+    predefined: true
   },
   {
     id: "java-rest-frameworks",
     name: "java rest frameworks",
-    repos: ["spring-projects/spring-boot", "dropwizard/dropwizard"]
+    repos: ["spring-projects/spring-boot", "dropwizard/dropwizard"],
+    predefined: true
   },
   {
     id: "js-utils-libs",
     name: "js utils libs",
-    repos: ["lodash/lodash", "jashkenas/underscore"]
+    repos: ["lodash/lodash", "jashkenas/underscore"],
+    predefined: true
   }
 ];
 

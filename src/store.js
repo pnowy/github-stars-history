@@ -9,10 +9,25 @@ import appConfig from "@/config/app.config";
 Vue.use(Vuex);
 
 const state = {
-  stacks: []
+  stacks: [],
+  showPredefined: true
 };
 
-const mutations = make.mutations(state);
+const mutations = {
+  ...make.mutations(state),
+
+  addStack(state, { stack }) {
+    state.stacks.push(stack);
+  },
+  removeStack(state, stack) {
+    state.stacks.splice(state.stacks.indexOf(stack), 1);
+  }
+  // ,
+  // editStack(state, { todo, text = todo.text, done = todo.done }) {
+  //   todo.text = text
+  //   todo.done = done
+  // };
+};
 
 export default new Vuex.Store({
   plugins: [
