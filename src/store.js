@@ -19,7 +19,7 @@ const mutations = {
   addStack(state, { stack }) {
     state.stacks.push(stack);
   },
-  removeStack(state, stack) {
+  deleteStack(state, { stack }) {
     state.stacks.splice(state.stacks.indexOf(stack), 1);
   }
   // ,

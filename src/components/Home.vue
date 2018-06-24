@@ -11,9 +11,12 @@
         <div class="columns ">
           <div class="column is-one-third ">
 
-            <available-stacks :stacks="stacks" @select-stack="selectStack" @new-stack="newStack" />
+            <available-stacks :stacks="stacks"
+                              @select-stack="selectStack"
+                              @add-stack="addStack"
+                              @delete-stack="deleteStack" />
 
-            <selected-stack v-if="selectedStack" :stack="selectedStack" />
+            <selected-stack v-if="selectedStack && selectedStack.id" :stack="selectedStack" />
 
           </div>
 
@@ -35,6 +38,7 @@
 import AvailableStacks from "@/components/AvailableStacks.vue";
 import SelectedStack from "@/components/SelectedStack.vue";
 import StarsChart from "@/components/StarsChart.vue";
+import { guid } from "@/utils/random.utils.js";
 
 export default {
   name: "Home",
@@ -45,7 +49,7 @@ export default {
   },
   data() {
     return {
-      selectedStack: null,
+      selectedStack: {},
       chartData: {
         labels: [1500, 1600, 1700, 1750, 1800, 1850, 1900, 1950, 1999, 2050],
         datasets: [
@@ -92,14 +96,17 @@ export default {
     selectStack(stack) {
       this.selectedStack = stack;
     },
-    newStack(stackName) {
-      console.log(stackName);
+    addStack(stackName) {
       const stack = {
-        id: "",
+        id: guid(),
         name: stackName,
         repos: []
       };
       this.$store.commit("addStack", { stack });
+    },
+    deleteStack(stack) {
+      this.$store.commit("deleteStack", { stack });
+      this.selectedStack.id = null;
     }
   }
 };

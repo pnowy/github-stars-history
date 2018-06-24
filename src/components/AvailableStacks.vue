@@ -18,18 +18,28 @@
       show predefined stacks
     </label>
 
-    <a class="panel-block" :class="{ 'is-active': currIndex === index }"
+    <a class="panel-block"  :class="{ 'is-active': currIndex === index, 'panel-with-remove-button': !stack.predefined }"
        v-for="(stack, index) in filteredStacks" :key="stack.name"
        @click="selectStackEvent(stack, index)" >
-      <span class="panel-icon">
-        <i class="mdi mdi-checkbox-blank-circle" aria-hidden="true"/>
+
+      <div>
+        <span class="panel-icon">
+          <i class="mdi mdi-checkbox-blank-circle" aria-hidden="true"/>
+        </span>
+        <span>
+          {{ stack.name }}
+        </span>
+      </div>
+
+      <span v-if="!stack.predefined">
+        <a class="button is-small" @click="deleteStackEvent(stack)">remove</a>
       </span>
-      {{ stack.name }}
+
     </a>
 
     <div class="panel-block">
       <p class="control is-expanded">
-        <input v-model="newStackName" class="input is-small" type="text" placeholder="new stack">
+        <input v-model="newStackName" class="input is-small" type="text" placeholder="new stack" @keyup.enter="newStackEvent">
       </p>
       <a class="button is-small" @click="newStackEvent">add</a>
     </div>
@@ -77,12 +87,18 @@ export default {
       this.currIndex = index;
     },
     newStackEvent() {
-      this.$emit("new-stack", this.newStackName);
+      this.$emit("add-stack", this.newStackName);
       this.newStackName = null;
+    },
+    deleteStackEvent(stack) {
+      this.$emit("delete-stack", stack);
     }
   }
 };
 </script>
 
 <style scoped>
+.panel-with-remove-button {
+  justify-content: space-between;
+}
 </style>
