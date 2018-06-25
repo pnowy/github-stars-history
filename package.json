@@ -9,6 +9,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "buefy": "^0.6.6",
     "chart.js": "^2.7.2",
     "lodash": "^4.17.10",

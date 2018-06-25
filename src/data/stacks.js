@@ -1,5 +1,11 @@
 const stacks = [
   {
+    id: "pnowy",
+    name: "pnowy projects",
+    repos: ["pnowy/NativeCriteria", "pnowy/git-cheat-sheet"],
+    predefined: true
+  },
+  {
     id: "js-frameworks",
     name: "js frameworks",
     repos: [

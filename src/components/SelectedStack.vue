@@ -17,11 +17,11 @@
       {{ repo }}
     </a>
 
-    <div class="panel-block">
+    <div class="panel-block" v-if="!stack.predefined">
       <p class="control is-expanded">
-        <input class="input is-small" type="text" placeholder="new repo">
+        <input class="input is-small" type="text" placeholder="new repo" v-model="newRepoName">
       </p>
-      <a class="button is-small">add</a>
+      <a class="button is-small" @click="addRepo">add</a>
     </div>
   </nav>
 </template>
@@ -33,6 +33,18 @@ export default {
     stack: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      newRepoName: ""
+    };
+  },
+  methods: {
+    addRepo() {
+      if (this.newRepoName) {
+        this.stack.repos.push(this.newRepoName);
+      }
     }
   }
 };

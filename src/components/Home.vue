@@ -38,7 +38,7 @@
 import AvailableStacks from "@/components/AvailableStacks.vue";
 import SelectedStack from "@/components/SelectedStack.vue";
 import StarsChart from "@/components/StarsChart.vue";
-import { guid } from "@/utils/random.utils.js";
+import { guid } from "@/utils/random.utils";
 
 export default {
   name: "Home",
