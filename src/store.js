@@ -10,7 +10,16 @@ Vue.use(Vuex);
 
 const state = {
   stacks: [],
-  showPredefined: true
+  showPredefined: true,
+  repos: []
+};
+
+const getters = {
+  findRepoInStore: state => (repoName, repoDate) => {
+    return state.repos.find(
+      repo => repo.name === repoName && repo.date === repoDate
+    );
+  }
 };
 
 const mutations = {
@@ -21,6 +30,9 @@ const mutations = {
   },
   deleteStack(state, { stack }) {
     state.stacks.splice(state.stacks.indexOf(stack), 1);
+  },
+  saveRepoToStore(state, { repo }) {
+    state.repos.push(repo);
   }
   // ,
   // editStack(state, { todo, text = todo.text, done = todo.done }) {
@@ -34,7 +46,8 @@ export default new Vuex.Store({
     VuexPathify.plugin,
     createPersistedState({ key: appConfig.defaults.persistedStore.name })
   ],
-  state: state,
-  mutations: mutations,
+  state,
+  mutations,
+  getters,
   actions: {}
 });

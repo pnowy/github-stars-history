@@ -1,45 +1,45 @@
 import { http } from "@/services/http.service";
 
-const sampleNum = 15; // number of sample requests to do
+const sampleNum = 30; // number of sample requests to do
 
 /**
  * generate Urls and pageNums
- * @param {sting} repo - eg: 'timqian/jsCodeStructure'
+ * @param {string} repoName - eg: 'timqian/jsCodeStructure'
  * @return {object} {sampleUrls, pageIndexes} - urls to be fatched(length <=10) and page indexes
  */
-async function generateUrls(repo) {
+async function generateUrls(repoName) {
   let sampleUrls = []; // store sampleUrls to be rquested
   let pageIndexes = []; // used to calculate total stars for this page
 
-  const initUrl = `https://api.github.com/repos/${repo}/stargazers`; // used to get star infors
+  const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star infors
   const initRes = await http.get(initUrl).catch(res => {
     throw "No such repo or network error!";
   });
 
   /**
    * link Sample (no link when star < 30):
-   * <https://api.github.com/repositories/40237624/stargazers?access_token=2e71ec1017dda2220ccba0f6922ecefd9ea44ac7&page=2>;
-   * rel="next",
-   * <https://api.github.com/repositories/40237624/stargazers?access_token=2e71ec1017dda2220ccba0f6922ecefd9ea44ac7&page=4>;
-   * rel="last"
+   * <https://api.github.com/repositories/40237624/stargazers?access_token=2e71ec1017dda2220ccba0f6922ecefd9ea44ac7&page=2>; rel="next",
+   * <https://api.github.com/repositories/40237624/stargazers?access_token=2e71ec1017dda2220ccba0f6922ecefd9ea44ac7&page=4>; rel="last"
    */
   const link = initRes.headers.link;
 
   if (!link) {
+    // TODO get all starts from page
     throw "Too few stars (less than 30)!";
   }
 
-  const pageNum = /next.*?page=(\d*).*?last/.exec(link)[1]; // total page number
+  const totalPageNum = /next.*?page=(\d*).*?last/.exec(link)[1]; // total page number
 
   // generate { sampleUrls, pageIndexes } accordingly
-  if (pageNum <= sampleNum) {
-    for (let i = 2; i <= pageNum; i++) {
+  if (totalPageNum <= sampleNum) {
+    // TODO count how many stars you could get for specific page
+    for (let i = 2; i <= totalPageNum; i++) {
       pageIndexes.push(i);
       sampleUrls.push(initUrl + "?page=" + i);
     }
   } else {
     for (let i = 1; i <= sampleNum; i++) {
-      let pageIndex = Math.round((i / sampleNum) * pageNum) - 1; // for bootstrap bug
+      let pageIndex = Math.round((i / sampleNum) * totalPageNum) - 1; // for bootstrap bug
       pageIndexes.push(pageIndex);
       sampleUrls.push(initUrl + "?page=" + pageIndex);
     }
@@ -50,12 +50,12 @@ async function generateUrls(repo) {
 }
 
 /**
- * get star history
- * @param {sting} repo - eg: 'timqian/jsCodeStructure'
- * @return {array} history - eg: [{date: 2015-3-1,starNum: 12}, ...]
+ * Get star history
+ * @param {string} repoName - eg: 'pnowy/NativeCriteria'
+ * @return {object} history - eg: {"2015-3-1": 12}
  */
-async function getStarHistory(repo) {
-  const { sampleUrls, pageIndexes } = await generateUrls(repo).catch(e => {
+async function getStarHistory(repoName) {
+  const { sampleUrls, pageIndexes } = await generateUrls(repoName).catch(e => {
     throw e;
   });
 
@@ -75,7 +75,7 @@ async function getStarHistory(repo) {
 
   // Better view for less star repos (#28) and for repos with too much stars (>40000)
   const resForStarNum = await http
-    .get(`https://api.github.com/repos/${repo}`)
+    .get(`https://api.github.com/repos/${repoName}`)
     .catch(res => {
       throw "Github api limit exceeded, Try in the new hour!";
     });
@@ -93,7 +93,27 @@ async function getStarHistory(repo) {
     starNum: starNumToday
   });
 
-  return starHistory;
+  const repoData = {};
+  starHistory.forEach(item => (repoData[item.date] = item.starNum));
+  return {
+    name: repoName,
+    data: repoData
+  };
 }
 
-export default { generateUrls, getStarHistory };
+export default { getStarHistory };
+
+// graphql query for version API 4
+
+// {
+//   repository(name: "vue", owner:"vuejs") {
+//   name
+//   stargazers(first:100, after: "Y3Vyc29yOnYyOpIAzgEfWJo=") {
+//     totalCount
+//     edges {
+//       cursor
+//       starredAt
+//     }
+//   }
+// }
+// }

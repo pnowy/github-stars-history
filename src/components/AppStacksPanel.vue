@@ -52,7 +52,7 @@ import predefinedStacks from "@/data/stacks";
 import { sync } from "vuex-pathify";
 
 export default {
-  name: "AvailableStacks",
+  name: "AppStacksPanel",
   props: {
     stacks: {
       type: Array,

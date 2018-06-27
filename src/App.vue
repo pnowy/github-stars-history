@@ -1,18 +1,20 @@
 <template>
   <div id="app">
-    <AppHeader />
+    <app-header />
 
-    <home />
+    <app-home />
 
+    <app-notifications />
   </div>
 </template>
 
 <script>
 import AppHeader from "@/components/layout/AppHeader";
-import Home from "@/components/Home";
+import AppNotifications from "@/components/layout/AppNotifications";
+import AppHome from "@/components/AppHome";
 
 export default {
-  components: { AppHeader, Home }
+  components: { AppHeader, AppHome, AppNotifications }
 };
 </script>
 

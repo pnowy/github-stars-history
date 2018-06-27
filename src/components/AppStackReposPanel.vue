@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  name: "SelectedStack",
+  name: "AppStackReposPanel",
   props: {
     stack: {
       type: Object,
