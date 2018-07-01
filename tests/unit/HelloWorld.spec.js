@@ -15,10 +15,10 @@ describe("SimpleUnitTest", () => {
     // const react = await starHistoryService.getStarHistory("facebook/react");
     // console.log(react);
 
-    const spring = await starHistoryService.getStarHistory(
-      "spring-projects/spring-boot"
-    );
-    console.log(spring);
-    // console.log(DateTime.utc().toISODate());
+    // const spring = await starHistoryService.getStarHistory(
+    //   "spring-projects/spring-boot"
+    // );
+    // console.log(spring);
+    console.log(DateTime.utc().toISODate());
   });
 });

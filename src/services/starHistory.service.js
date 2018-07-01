@@ -1,17 +1,25 @@
 import { http } from "@/services/http.service";
+import { DateTime } from "luxon";
 
-const sampleNum = 30; // number of sample requests to do
+const sampleNum = 30; // number of samples for chart
+
+const buildChartObject = (repoName, repoData) => {
+  return {
+    name: repoName,
+    data: repoData
+  };
+};
 
 /**
- * generate Urls and pageNums
- * @param {string} repoName - eg: 'timqian/jsCodeStructure'
- * @return {object} {sampleUrls, pageIndexes} - urls to be fatched(length <=10) and page indexes
+ * Get star history
+ * @param {string} repoName - eg: 'pnowy/NativeCriteria'
+ * @return {object} history - eg: { "2015-03-01": 12 }
  */
-async function generateUrls(repoName) {
-  let sampleUrls = []; // store sampleUrls to be rquested
+async function getStarHistory(repoName) {
+  let sampleUrls = []; // store sampleUrls to be requested
   let pageIndexes = []; // used to calculate total stars for this page
 
-  const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star infors
+  const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
   const initRes = await http.get(initUrl).catch(res => {
     throw "No such repo or network error!";
   });
@@ -23,19 +31,27 @@ async function generateUrls(repoName) {
    */
   const link = initRes.headers.link;
 
+  // less than 30
   if (!link) {
-    // TODO get all starts from page
-    throw "Too few stars (less than 30)!";
+    const repoData = {};
+    for (let i = 0; i < initRes.data.length; i++) {
+      repoData[`${initRes.data[i].starred_at.slice(0, 10)}`] = i + 1;
+    }
+    return buildChartObject(repoName, repoData);
   }
 
   const totalPageNum = /next.*?page=(\d*).*?last/.exec(link)[1]; // total page number
 
+  // const queryData = [];
   // generate { sampleUrls, pageIndexes } accordingly
   if (totalPageNum <= sampleNum) {
     // TODO count how many stars you could get for specific page
     for (let i = 2; i <= totalPageNum; i++) {
       pageIndexes.push(i);
       sampleUrls.push(initUrl + "?page=" + i);
+      // queryData.push({
+      //   pageIndex
+      // });
     }
   } else {
     for (let i = 1; i <= sampleNum; i++) {
@@ -45,19 +61,7 @@ async function generateUrls(repoName) {
     }
   }
 
-  console.log("pageIndexes", pageIndexes);
-  return { sampleUrls, pageIndexes };
-}
-
-/**
- * Get star history
- * @param {string} repoName - eg: 'pnowy/NativeCriteria'
- * @return {object} history - eg: {"2015-3-1": 12}
- */
-async function getStarHistory(repoName) {
-  const { sampleUrls, pageIndexes } = await generateUrls(repoName).catch(e => {
-    throw e;
-  });
+  // console.log("pageIndexes", pageIndexes);
 
   // promisese to request sampleUrls
   const getArray = sampleUrls.map(url => http.get(url));
@@ -66,39 +70,28 @@ async function getStarHistory(repoName) {
     throw "Github api limit exceeded, Try in the new hour!";
   });
 
-  const starHistory = pageIndexes.map((p, i) => {
+  const starHistory = pageIndexes.map((pageNumber, index) => {
     return {
-      date: resArray[i].data[0].starred_at.slice(0, 10),
-      starNum: 30 * (p - 1)
+      date: resArray[index].data[0].starred_at.slice(0, 10),
+      starNum: 30 * (pageNumber - 1)
     };
   });
 
-  // Better view for less star repos (#28) and for repos with too much stars (>40000)
+  // Stars number for today (better view for repos with too much stars (>40000))
   const resForStarNum = await http
     .get(`https://api.github.com/repos/${repoName}`)
     .catch(res => {
       throw "Github api limit exceeded, Try in the new hour!";
     });
   const starNumToday = resForStarNum.data.stargazers_count;
-  const today = new Date();
-  const monthFormat =
-    today.getMonth() + 1 > 10
-      ? today.getMonth() + 1
-      : `0${today.getMonth() + 1}`;
-  const dateFormat =
-    today.getDate() > 10 ? today.getDate() : `0${today.getDate()}`;
-
   starHistory.push({
-    date: `${today.getFullYear()}-${monthFormat}-${dateFormat}`,
+    date: DateTime.utc().toISODate(),
     starNum: starNumToday
   });
 
   const repoData = {};
   starHistory.forEach(item => (repoData[item.date] = item.starNum));
-  return {
-    name: repoName,
-    data: repoData
-  };
+  return buildChartObject(repoName, repoData);
 }
 
 export default { getStarHistory };
