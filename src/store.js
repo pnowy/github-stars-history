@@ -14,13 +14,7 @@ const state = {
   repos: []
 };
 
-const getters = {
-  findRepoInStore: state => (repoName, repoDate) => {
-    return state.repos.find(
-      repo => repo.name === repoName && repo.date === repoDate
-    );
-  }
-};
+const getters = {};
 
 const mutations = {
   ...make.mutations(state),
@@ -30,9 +24,6 @@ const mutations = {
   },
   deleteStack(state, { stack }) {
     state.stacks.splice(state.stacks.indexOf(stack), 1);
-  },
-  saveRepoToStore(state, { repo }) {
-    state.repos.push(repo);
   }
   // ,
   // editStack(state, { todo, text = todo.text, done = todo.done }) {

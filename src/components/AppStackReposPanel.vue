@@ -10,18 +10,31 @@
       </p>
     </div>
 
-    <a v-for="repo in stack.repos" :key="repo" class="panel-block">
+    <a 
+      v-for="repo in stack.repos" 
+      :key="repo" 
+      class="panel-block">
       <span class="panel-icon">
-        <i class="mdi mdi-file-chart" aria-hidden="true"/>
+        <i 
+          class="mdi mdi-file-chart" 
+          aria-hidden="true"/>
       </span>
       {{ repo }}
     </a>
 
-    <div class="panel-block" v-if="!stack.predefined">
+    <div 
+      v-if="!stack.predefined" 
+      class="panel-block">
       <p class="control is-expanded">
-        <input class="input is-small" type="text" placeholder="new repo" v-model="newRepoName">
+        <input 
+          v-model="newRepoName" 
+          class="input is-small" 
+          type="text" 
+          placeholder="new repo">
       </p>
-      <a class="button is-small" @click="addRepo">add</a>
+      <a 
+        class="button is-small" 
+        @click="addRepo">add</a>
     </div>
   </nav>
 </template>

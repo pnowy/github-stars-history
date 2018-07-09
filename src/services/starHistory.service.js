@@ -1,12 +1,18 @@
 import { http } from "@/services/http.service";
 import { DateTime } from "luxon";
+import notificationService from "@/services/notification.service";
 
 const sampleNum = 30; // number of samples for chart
 
 const buildChartObject = (repoName, repoData) => {
+  const validUntil = DateTime.utc()
+    .plus({ days: 3 })
+    .toISO();
   return {
     name: repoName,
-    data: repoData
+    data: repoData,
+    fromGithubApi: true,
+    validUntil
   };
 };
 
@@ -21,7 +27,7 @@ async function getStarHistory(repoName) {
 
   const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
   const initRes = await http.get(initUrl).catch(res => {
-    throw "No such repo or network error!";
+    notificationService.error(`No such repo or network error!`, res);
   });
 
   /**
@@ -67,7 +73,10 @@ async function getStarHistory(repoName) {
   const getArray = sampleUrls.map(url => http.get(url));
 
   const resArray = await Promise.all(getArray).catch(res => {
-    throw "Github api limit exceeded, Try in the new hour!";
+    notificationService.error(
+      `Github api limit exceeded, Try in the new hour!`,
+      res
+    );
   });
 
   const starHistory = pageIndexes.map((pageNumber, index) => {
@@ -81,7 +90,10 @@ async function getStarHistory(repoName) {
   const resForStarNum = await http
     .get(`https://api.github.com/repos/${repoName}`)
     .catch(res => {
-      throw "Github api limit exceeded, Try in the new hour!";
+      notificationService.error(
+        `Github api limit exceeded, Try in the new hour!`,
+        res
+      );
     });
   const starNumToday = resForStarNum.data.stargazers_count;
   starHistory.push({

@@ -3,8 +3,7 @@
 </template>
 
 <script>
-import EventBus from "@/services/event-bus.service";
-import appConfig from "@/config/app.config";
+import eventBusService from "@/services/event-bus.service";
 
 export default {
   name: "AppNotifications",
@@ -34,15 +33,15 @@ export default {
       //   this.showError("errors.SETUP_REQUEST_ERROR", message);
       // });
       //
-      EventBus.$on("NOTIFICATION_SUCCESS", message => {
+      eventBusService.$on("NOTIFICATION_SUCCESS", message => {
         this.showSuccess(message);
       });
 
-      EventBus.$on("NOTIFICATION_ERROR", message => {
+      eventBusService.$on("NOTIFICATION_ERROR", message => {
         this.showError(message);
       });
 
-      // token expired (manager should have full access to API) - forward to login
+      // token expired - forward to login
       // EventBus.$on("UNAUTHORIZED_ACCESS", () => {
       //   this.$router.push({ name: "login" });
       // });

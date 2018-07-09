@@ -11,18 +11,23 @@
         <div class="columns is-centered">
           <div class="column is-one-third ">
 
-            <app-stacks-panel :stacks="stacks"
-                              @select-stack="selectStack"
-                              @add-stack="addStack"
-                              @delete-stack="deleteStack" />
+            <app-stacks-panel 
+              :stacks="stacks"
+              @select-stack="selectStack"
+              @add-stack="addStack"
+              @delete-stack="deleteStack" />
 
-            <app-stack-repos-panel v-if="selectedStack && selectedStack.id" :stack="selectedStack" />
+            <app-stack-repos-panel 
+              v-if="selectedStack && selectedStack.id" 
+              :stack="selectedStack" />
 
           </div>
 
           <div class="column">
             <div class="columns is-centered is-vcentered">
-              <app-repos-chart v-if="selectedStack && selectedStack.id" :stack="selectedStack" />
+              <app-repos-chart 
+                v-if="selectedStack && selectedStack.id" 
+                :stack="selectedStack" />
             </div>
           </div>
 
