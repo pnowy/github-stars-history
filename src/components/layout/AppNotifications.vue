@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import eventBusService from "@/services/event-bus.service";
+import eventBusService from "@/services/eventBus.service";
 
 export default {
   name: "AppNotifications",

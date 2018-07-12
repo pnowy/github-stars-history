@@ -1,10 +1,21 @@
 import { http } from "@/services/http.service";
 import { DateTime } from "luxon";
 import notificationService from "@/services/notification.service";
+import _ from "lodash";
 
-const sampleNum = 30; // number of samples for chart
+const NUMBER_OF_SAMPLES = 30; // number of samples for chart
 
-const buildChartObject = (repoName, repoData) => {
+const range = (from, to, step) =>
+  Array(Math.floor((to - from) / step) + 1)
+    .fill(0)
+    .map((_v, i) => from + i * step);
+
+/**
+ * Creates single chart item
+ * @param repoName {String} repository name
+ * @param repoData {Object} repository data
+ */
+const buildChartItem = (repoName, repoData) => {
   const validUntil = DateTime.utc()
     .plus({ days: 3 })
     .toISO();
@@ -22,12 +33,11 @@ const buildChartObject = (repoName, repoData) => {
  * @return {object} history - eg: { "2015-03-01": 12 }
  */
 async function getStarHistory(repoName) {
-  let sampleUrls = []; // store sampleUrls to be requested
-  let pageIndexes = []; // used to calculate total stars for this page
+  const querySpecification = [];
 
   const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
-  const initRes = await http.get(initUrl).catch(res => {
-    notificationService.error(`No such repo or network error!`, res);
+  const initRes = await http.get(initUrl).catch(_res => {
+    notificationService.error("No such repo or network error!");
   });
 
   /**
@@ -37,65 +47,76 @@ async function getStarHistory(repoName) {
    */
   const link = initRes.headers.link;
 
-  // less than 30
+  // repos with less than 30 stars
   if (!link) {
     const repoData = {};
-    for (let i = 0; i < initRes.data.length; i++) {
-      repoData[`${initRes.data[i].starred_at.slice(0, 10)}`] = i + 1;
+    let initRequestData = initRes.data;
+    for (let i = 0; i < initRequestData.length; i++) {
+      // star date : star numbers
+      repoData[`${initRequestData[i].starred_at.slice(0, 10)}`] = i + 1;
     }
-    return buildChartObject(repoName, repoData);
+    return buildChartItem(repoName, repoData);
   }
 
   const totalPageNum = /next.*?page=(\d*).*?last/.exec(link)[1]; // total page number
 
-  // const queryData = [];
-  // generate { sampleUrls, pageIndexes } accordingly
-  if (totalPageNum <= sampleNum) {
-    // TODO count how many stars you could get for specific page
-    for (let i = 2; i <= totalPageNum; i++) {
-      pageIndexes.push(i);
-      sampleUrls.push(initUrl + "?page=" + i);
-      // queryData.push({
-      //   pageIndex
-      // });
+  if (totalPageNum <= NUMBER_OF_SAMPLES) {
+    // for repos which have less than 30 pages we have to get more than one sample per page
+    const samplesForPage = parseInt(NUMBER_OF_SAMPLES / totalPageNum, 10);
+    // count step (to get indexes)
+    const step = NUMBER_OF_SAMPLES / samplesForPage;
+    // generate array with indexes by counted step
+    const dataIndexes = range(0, NUMBER_OF_SAMPLES, step);
+    // limit array if more that expected number of samples per page
+    dataIndexes.length = samplesForPage;
+    for (let i = 1; i <= totalPageNum; i++) {
+      querySpecification.push({
+        url: initUrl + "?page=" + i,
+        pageIndex: i,
+        dataIndexes
+      });
     }
   } else {
-    for (let i = 1; i <= sampleNum; i++) {
-      let pageIndex = Math.round((i / sampleNum) * totalPageNum) - 1; // for bootstrap bug
-      pageIndexes.push(pageIndex);
-      sampleUrls.push(initUrl + "?page=" + pageIndex);
+    // for repos with more than 30 pages get only single item from page (to keep 30 samples for chart)
+    for (let i = 1; i <= NUMBER_OF_SAMPLES; i++) {
+      const pageIndex = Math.round((i / NUMBER_OF_SAMPLES) * totalPageNum) - 1;
+      querySpecification.push({
+        url: initUrl + "?page=" + pageIndex,
+        pageIndex,
+        dataIndexes: [0]
+      });
     }
   }
 
-  // console.log("pageIndexes", pageIndexes);
-
-  // promisese to request sampleUrls
-  const getArray = sampleUrls.map(url => http.get(url));
-
-  const resArray = await Promise.all(getArray).catch(res => {
+  const queryPromises = querySpecification.map(r => http.get(r.url));
+  const responses = await Promise.all(queryPromises).catch(_res => {
     notificationService.error(
-      `Github api limit exceeded, Try in the new hour!`,
-      res
+      "Github api limit exceeded, Try in the new hour!"
     );
   });
 
-  const starHistory = pageIndexes.map((pageNumber, index) => {
-    return {
-      date: resArray[index].data[0].starred_at.slice(0, 10),
-      starNum: 30 * (pageNumber - 1)
-    };
+  const starHistory = _.flatMap(querySpecification, (spec, index) => {
+    const { data } = responses[index];
+    // retrieve data under specified indexes on given page
+    return spec.dataIndexes
+      .filter(dataIndex => dataIndex < data.length) // skip latest not full pages
+      .map(dataIndex => {
+        return {
+          date: data[dataIndex].starred_at.slice(0, 10),
+          starNum: 30 * (spec.pageIndex - 1) + dataIndex
+        };
+      });
   });
 
   // Stars number for today (better view for repos with too much stars (>40000))
-  const resForStarNum = await http
+  const currentStarsNumberResponse = await http
     .get(`https://api.github.com/repos/${repoName}`)
-    .catch(res => {
+    .catch(_res => {
       notificationService.error(
-        `Github api limit exceeded, Try in the new hour!`,
-        res
+        "Github api limit exceeded, Try in the new hour!"
       );
     });
-  const starNumToday = resForStarNum.data.stargazers_count;
+  const starNumToday = currentStarsNumberResponse.data.stargazers_count;
   starHistory.push({
     date: DateTime.utc().toISODate(),
     starNum: starNumToday
@@ -103,7 +124,7 @@ async function getStarHistory(repoName) {
 
   const repoData = {};
   starHistory.forEach(item => (repoData[item.date] = item.starNum));
-  return buildChartObject(repoName, repoData);
+  return buildChartItem(repoName, repoData);
 }
 
 export default { getStarHistory };

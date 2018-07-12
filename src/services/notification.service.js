@@ -1,4 +1,4 @@
-import eventBus from "@/services/event-bus.service";
+import eventBus from "@/services/eventBus.service";
 
 const error = message => {
   eventBus.$emit("NOTIFICATION_ERROR", message);

@@ -27,6 +27,12 @@ const stacks = [
     name: "js utils libs",
     repos: ["lodash/lodash", "jashkenas/underscore"],
     predefined: true
+  },
+  {
+    id: "test",
+    name: "test",
+    repos: ["railsgirls/railsgirls.github.io"],
+    predefined: true
   }
 ];
 

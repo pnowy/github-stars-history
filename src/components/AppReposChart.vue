@@ -1,9 +1,13 @@
 <template>
-  <div v-if="reposData && reposData.length">
+  <div
+    v-if="reposData && reposData.length"
+    class="chart__container"
+  >
     <line-chart
       :library="config"
       :data="reposData"
       height="800px"
+      width="100%"
       ytitle="Stars"
       legend="top" />
   </div>
@@ -97,4 +101,8 @@ export default {
 </script>
 
 <style scoped>
+.chart__container {
+  width: 100%;
+  height: 100%;
+}
 </style>
