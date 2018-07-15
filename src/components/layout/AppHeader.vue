@@ -21,7 +21,7 @@
       <div class="navbar-menu">
         <div class="navbar-end">
           <div class="field is-grouped">
-            <p class="control">
+            <p class="control paragraph--padding-top">
               <span class="title is-4" >GitHub stars history and charts</span>
             </p>
             <p class="control">
