@@ -70,6 +70,12 @@ export default {
             resolve(starHistoryService.getStarHistory(repoName));
           }
         });
+      }).catch(e => {
+        notificationService.error(e.statusText);
+        return {
+          name: repoName,
+          data: []
+        };
       });
     },
     saveRepoToStore(repo) {
@@ -86,7 +92,7 @@ export default {
       this.reposData = await Promise.all(dataPromises)
         .catch(res => {
           this.reposData = [];
-          notificationService.error("Problem with repo data load!", res);
+          notificationService.error("Problem with stack repos data!", res);
         })
         .finally(() => {
           loader.hide();

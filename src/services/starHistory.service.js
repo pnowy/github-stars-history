@@ -1,6 +1,5 @@
 import { http } from "@/services/http.service";
 import { DateTime } from "luxon";
-import notificationService from "@/services/notification.service";
 import _ from "lodash";
 
 const NUMBER_OF_SAMPLES = 30; // number of samples for chart
@@ -28,6 +27,18 @@ const buildChartItem = (repoName, repoData) => {
 };
 
 /**
+ * Converts error to internal structure.
+ */
+const convertError = (repoName, res) => {
+  const { data, status, statusText } = res.response;
+  throw {
+    data,
+    status,
+    statusText: `Repository '${repoName}' ${statusText}`
+  };
+};
+
+/**
  * Get star history
  * @param {string} repoName - eg: 'pnowy/NativeCriteria'
  * @return {object} history - eg: { "2015-03-01": 12 }
@@ -36,8 +47,8 @@ async function getStarHistory(repoName) {
   const querySpecification = [];
 
   const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
-  const initRes = await http.get(initUrl).catch(_res => {
-    notificationService.error("No such repo or network error!");
+  const initRes = await http.get(initUrl).catch(res => {
+    return convertError(repoName, res);
   });
 
   /**
@@ -89,10 +100,8 @@ async function getStarHistory(repoName) {
   }
 
   const queryPromises = querySpecification.map(r => http.get(r.url));
-  const responses = await Promise.all(queryPromises).catch(_res => {
-    notificationService.error(
-      "Github api limit exceeded, Try in the new hour!"
-    );
+  const responses = await Promise.all(queryPromises).catch(res => {
+    return convertError(repoName, res);
   });
 
   const starHistory = _.flatMap(querySpecification, (spec, index) => {
@@ -111,10 +120,8 @@ async function getStarHistory(repoName) {
   // Stars number for today (better view for repos with too much stars (>40000))
   const currentStarsNumberResponse = await http
     .get(`https://api.github.com/repos/${repoName}`)
-    .catch(_res => {
-      notificationService.error(
-        "Github api limit exceeded, Try in the new hour!"
-      );
+    .catch(res => {
+      return convertError(repoName, res);
     });
   const starNumToday = currentStarsNumberResponse.data.stargazers_count;
   starHistory.push({
