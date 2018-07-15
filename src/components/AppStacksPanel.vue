@@ -6,37 +6,38 @@
 
     <div class="panel-block">
       <p class="control has-icons-left">
-        <input 
-          v-model="search" 
-          class="input is-small" 
-          type="text" 
+        <input
+          v-model="search"
+          class="input is-small"
+          type="text"
           placeholder="search">
         <span class="icon is-small is-left">
-          <i 
-            class="mdi mdi-magnify is-medium" 
+          <i
+            class="mdi mdi-magnify is-medium"
             aria-hidden="true"/>
         </span>
       </p>
     </div>
 
     <label class="panel-block">
-      <input 
-        v-model="showPredefined" 
+      <input
+        v-model="showPredefined"
         type="checkbox" >
       show predefined stacks
     </label>
 
-    <a 
-      v-for="(stack, index) in filteredStacks" 
+    <a
+      v-for="(stack, index) in filteredStacks"
       :class="{ 'is-active': currIndex === index, 'panel-with-remove-button': !stack.predefined }"
-      :key="stack.name" 
+      :key="stack.name"
       class="panel-block"
-      @click="selectStackEvent(stack, index)" >
+      @click="selectStackEvent(stack, index)"
+    >
 
       <div>
         <span class="panel-icon">
-          <i 
-            class="mdi mdi-checkbox-blank-circle" 
+          <i
+            class="mdi mdi-checkbox-blank-circle"
             aria-hidden="true"/>
         </span>
         <span>
@@ -45,24 +46,24 @@
       </div>
 
       <span v-if="!stack.predefined">
-        <a 
-          class="button is-small" 
-          @click="deleteStackEvent(stack)">remove</a>
+        <button
+          class="button is-small"
+          @click.stop="deleteStack(stack)">remove</button>
       </span>
 
     </a>
 
     <div class="panel-block">
       <p class="control is-expanded">
-        <input 
-          v-model="newStackName" 
-          class="input is-small" 
-          type="text" 
-          placeholder="new stack" 
+        <input
+          v-model="newStackName"
+          class="input is-small"
+          type="text"
+          placeholder="new stack"
           @keyup.enter="newStackEvent">
       </p>
-      <a 
-        class="button is-small" 
+      <a
+        class="button is-small"
         @click="newStackEvent">add</a>
     </div>
 
@@ -89,6 +90,8 @@ export default {
     };
   },
   computed: {
+    ...sync(["showPredefined"]),
+
     filteredStacks() {
       const userStacks = this.stacks.filter(stack => {
         return stack.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1;
@@ -100,8 +103,7 @@ export default {
         );
       });
       return predefined.concat(userStacks);
-    },
-    showPredefined: sync("showPredefined")
+    }
   },
   methods: {
     selectStackEvent(stack, index) {
@@ -112,7 +114,7 @@ export default {
       this.$emit("add-stack", this.newStackName);
       this.newStackName = null;
     },
-    deleteStackEvent(stack) {
+    deleteStack(stack) {
       this.$emit("delete-stack", stack);
     }
   }

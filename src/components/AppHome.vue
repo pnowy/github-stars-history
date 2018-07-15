@@ -1,8 +1,4 @@
 <template>
-  <!--<div class="home">-->
-  <!--<img src="../assets/logo.png">-->
-  <!--</div>-->
-
   <!-- Main container -->
   <div>
     <section class="section">
@@ -11,23 +7,25 @@
         <div class="columns is-centered">
           <div class="column is-one-third ">
 
-            <app-stacks-panel 
+            <app-stacks-panel
               :stacks="stacks"
               @select-stack="selectStack"
               @add-stack="addStack"
-              @delete-stack="deleteStack" />
+              @delete-stack="deleteStack"
+            />
 
-            <app-stack-repos-panel 
-              v-if="selectedStack && selectedStack.id" 
-              :stack="selectedStack" />
-
+            <app-repos-panel
+              v-if="selectedStack"
+              :stack="selectedStack"
+              @edit-stack="editStack"/>
           </div>
 
           <div class="column">
             <div class="columns is-centered is-vcentered">
-              <app-repos-chart 
-                v-if="selectedStack && selectedStack.id" 
-                :stack="selectedStack" />
+              <app-repos-chart
+                v-if="selectedStack"
+                :repos="selectedStack.repos"
+              />
             </div>
           </div>
 
@@ -42,7 +40,7 @@
 
 <script>
 import AppStacksPanel from "@/components/AppStacksPanel";
-import AppStackReposPanel from "@/components/AppStackReposPanel";
+import AppReposPanel from "@/components/AppReposPanel";
 import AppReposChart from "@/components/AppReposChart";
 import { guid } from "@/utils/random.utils";
 
@@ -50,13 +48,12 @@ export default {
   name: "AppHome",
   components: {
     AppStacksPanel,
-    AppStackReposPanel,
+    AppReposPanel,
     AppReposChart
   },
   data() {
     return {
-      selectedStack: {},
-      reposData: []
+      selectedStack: null
     };
   },
   computed: {
@@ -75,10 +72,15 @@ export default {
         repos: []
       };
       this.$store.commit("addStack", { stack });
+      this.selectedStack = stack;
     },
     deleteStack(stack) {
       this.$store.commit("deleteStack", { stack });
-      this.selectedStack.id = null;
+      this.selectedStack = null;
+    },
+    editStack(stack) {
+      this.selectedStack = stack;
+      this.$store.commit("editStack", { stack });
     }
   }
 };

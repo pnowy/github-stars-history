@@ -35,8 +35,8 @@ const firebaseReposRef = db.ref("repos");
 export default {
   name: "AppReposChart",
   props: {
-    stack: {
-      type: Object,
+    repos: {
+      type: Array,
       required: true
     }
   },
@@ -51,7 +51,7 @@ export default {
     };
   },
   watch: {
-    stack: function() {
+    repos: function(_old, _new) {
       this.reloadRepos();
     }
   },
@@ -79,7 +79,7 @@ export default {
     async reloadRepos() {
       let loader = this.$loading.show();
 
-      const dataPromises = this.stack.repos.map(repoName =>
+      const dataPromises = this.repos.map(repoName =>
         this.getRepoData(repoName)
       );
 

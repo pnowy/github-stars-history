@@ -10,8 +10,7 @@ Vue.use(Vuex);
 
 const state = {
   stacks: [],
-  showPredefined: true,
-  repos: []
+  showPredefined: true
 };
 
 const getters = {};
@@ -23,13 +22,12 @@ const mutations = {
     state.stacks.push(stack);
   },
   deleteStack(state, { stack }) {
-    state.stacks.splice(state.stacks.indexOf(stack), 1);
+    const indexToDelete = state.stacks.findIndex(item => item.id === stack.id);
+    state.stacks.splice(indexToDelete, 1);
+  },
+  editStack(state, { stack }) {
+    state.stacks[state.stacks.findIndex(el => el.id === stack.id)] = stack;
   }
-  // ,
-  // editStack(state, { todo, text = todo.text, done = todo.done }) {
-  //   todo.text = text
-  //   todo.done = done
-  // };
 };
 
 export default new Vuex.Store({
