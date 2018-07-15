@@ -4,7 +4,6 @@ module.exports = {
     node: true
   },
   'extends': [
-    'plugin:vue/recommended',
     '@vue/prettier'
   ],
   rules: {
