@@ -11,12 +11,14 @@ I've extended the idea about option to add stacks in order to easier project com
 
 ## Technology
 
-The frontend part is written in Vue.js framework.
+The frontend part is written in [Vue.js](https://vuejs.org/) framework. The visual part has been made with [Bulma CSS framework](https://bulma.io/).
 
 Under the hood the stars are cached in the Firebase database (because the Github API has limits chart data is saved in Firebase
 for some limited time).
 
 The user added stacks are saved in browser local storage (by the `vuex` and the `vuex-persistedstate` plugin).
+
+The project is deployed on fantastic platform [Netlify](https://www.netlify.com/).
 
 ## Issues & features
 
