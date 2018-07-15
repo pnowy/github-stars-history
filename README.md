@@ -1,2 +1,3 @@
-# github-stars-history
-The missing github stars history!
+# Github star history
+
+The missing github star history!
