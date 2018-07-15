@@ -8,6 +8,9 @@
       <p>
         Do you want add something to predefined stacks? Just create pull request!
       </p>
+      <p>
+        Do you have an idea how to improve project? Create an issue!
+      </p>
     </div>
   </footer>
 
