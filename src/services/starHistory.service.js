@@ -16,7 +16,7 @@ const range = (from, to, step) =>
  */
 const buildChartItem = (repoName, repoData) => {
   const validUntil = DateTime.utc()
-    .plus({ days: 3 })
+    .plus({ days: 5 })
     .toISO();
   return {
     name: repoName,
