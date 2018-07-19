@@ -43,6 +43,16 @@ const stacks = [
     predefined: true
   },
   {
+    id: "static-site-generators",
+    name: "static site generators",
+    repos: [
+      "gohugoio/hugo",
+      "gatsbyjs/gatsby",
+      "jekyll/jekyll"
+    ],
+    predefined: true
+  },
+  {
     id: "pnowy",
     name: "pnowy projects",
     repos: [
