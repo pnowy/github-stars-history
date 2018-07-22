@@ -9,6 +9,18 @@ The missing github star history!
 The project was inspired by the [star-history](https://github.com/timqian/star-history) project.
 I've extended the idea about option to add stacks in order to easier project comparision.
 
+With this project you could observe and monitor specific github repos and simply compare is with other repos. 
+
+## I would like to add new predefined repo or stack
+
+If you would like to extend current predefined stack or create new stack create pull request to the 
+[stacks.js](https://github.com/pnowy/github-stars-history/blob/master/src/data/stacks.js) file.
+
+For new stack just add new object within array (consistent with specification of other stacks) and for new repo just
+add new repo name (must have owner and repo name, ie. `pnowy/github-stars-history`).
+
+Please remember that predefined stack needs `predefined: true` property in order display for all users. 
+
 ## Technology
 
 The frontend part is written in [Vue.js](https://vuejs.org/) framework. The visual part has been made with [Bulma CSS framework](https://bulma.io/).
