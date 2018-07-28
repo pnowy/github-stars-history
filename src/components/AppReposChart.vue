@@ -10,6 +10,7 @@
       width="100%"
       ytitle="Stars"
       legend="top" />
+
   </div>
 </template>
 
@@ -45,6 +46,13 @@ export default {
       config: {
         tooltip: {
           xDateFormat: "%Y-%m-%d"
+        },
+        plotOptions: {
+          series: {
+            marker: {
+              enabled: false
+            }
+          }
         }
       },
       reposData: []
