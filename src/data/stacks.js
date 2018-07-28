@@ -46,9 +46,20 @@ const stacks = [
     id: "static-site-generators",
     name: "static site generators",
     repos: [
+      "jekyll/jekyll",
+      "zeit/next.js",
       "gohugoio/hugo",
       "gatsbyjs/gatsby",
-      "jekyll/jekyll"
+      "hexojs/hexo",
+      "vuejs/vuepress",
+      "facebook/Docusaurus",
+      "GitbookIO/gitbook",
+      "imathis/octopress",
+      "getpelican/pelican",
+      "brunch/brunch",
+      "segmentio/metalsmith",
+      "middleman/middleman",
+      "nuxt/nuxt.js"
     ],
     predefined: true
   },
