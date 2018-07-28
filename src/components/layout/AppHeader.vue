@@ -6,7 +6,9 @@
     <div class="container">
       <div class="navbar-brand">
 
-        <a class="navbar-item has-background-primary has-text-weight-bold" href="/#">
+        <a
+          class="navbar-item has-background-primary has-text-weight-bold"
+          href="/#">
           GITHUB STARS
           <!--<img src="../assets/logo.png">-->
         </a>
@@ -23,15 +25,24 @@
           <span class="navbar-item is-4 has-text-weight-bold">
             GitHub stars history and charts
           </span>
-          <a class="navbar-item" href="https://github.com/pnowy/github-stars-history" target="_blank">
+          <a
+            class="navbar-item"
+            href="https://github.com/pnowy/github-stars-history"
+            target="_blank">
             <span class="button">
-              <b-icon pack="mdi" icon="github-circle" />
+              <b-icon
+                pack="mdi"
+                icon="github-circle" />
             </span>
           </a>
           <div class="navbar-item">
             <div class="paragraph--padding-top">
-              <a class="github-button" href="https://github.com/pnowy/github-stars-history"
-                 data-size="large" data-show-count="true" aria-label="Star pnowy/github-stars-history on GitHub">Star</a>
+              <a
+                class="github-button"
+                href="https://github.com/pnowy/github-stars-history"
+                data-size="large"
+                data-show-count="true"
+                aria-label="Star pnowy/github-stars-history on GitHub">Star</a>
             </div>
           </div>
         </div>
@@ -49,7 +60,7 @@ export default {
 </script>
 
 <style scoped>
-  .paragraph--padding-top {
-    padding-top: 6px;
-  }
+.paragraph--padding-top {
+  padding-top: 6px;
+}
 </style>
