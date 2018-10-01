@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import _ from "lodash";
 
 const NUMBER_OF_SAMPLES = 30; // number of samples for chart
+const CACHE_RETENTION_DAYS = 7;
 
 const range = (from, to, step) =>
   Array(Math.floor((to - from) / step) + 1)
@@ -16,7 +17,7 @@ const range = (from, to, step) =>
  */
 const buildChartItem = (repoName, repoData) => {
   const validUntil = DateTime.utc()
-    .plus({ days: 5 })
+    .plus({ days: CACHE_RETENTION_DAYS })
     .toISO();
   return {
     name: repoName,
