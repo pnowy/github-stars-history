@@ -13,7 +13,6 @@ import "vue-loading-overlay/dist/vue-loading.min.css";
 Vue.use(Buefy);
 Vue.use(VueChartkick, { adapter: Highcharts });
 Vue.use(Loading);
-console.log(process.env.NODE_ENV === "production")
 Vue.use(VueAnalytics, {
   id: "UA-19090015-8",
   debug: {
