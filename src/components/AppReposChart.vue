@@ -18,7 +18,8 @@
 import { DateTime } from "luxon";
 import starHistoryService from "@/services/starHistory.service";
 import notificationService from "@/services/notification.service";
-import Firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/database";
 import { encode } from "firebase-encode";
 
 const config = {
@@ -29,7 +30,7 @@ const config = {
   storageBucket: "github-stars-history.appspot.com",
   messagingSenderId: "860963673180"
 };
-const firebaseApp = Firebase.initializeApp(config);
+const firebaseApp = firebase.initializeApp(config);
 const db = firebaseApp.database();
 const firebaseReposRef = db.ref("repos");
 
