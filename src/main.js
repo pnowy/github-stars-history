@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import store from "./store";
 import Buefy from "buefy";
+import VueAnalytics from "vue-analytics";
 
 import VueChartkick from "vue-chartkick";
 import Highcharts from "highcharts";
@@ -11,8 +12,13 @@ import "vue-loading-overlay/dist/vue-loading.min.css";
 
 Vue.use(Buefy);
 Vue.use(VueChartkick, { adapter: Highcharts });
-
 Vue.use(Loading);
+Vue.use(VueAnalytics, {
+  id: "UA-19090015-8",
+  debug: {
+    sendHitTask: process.env.NODE_ENV === "production"
+  }
+});
 
 Vue.config.productionTip = false;
 
