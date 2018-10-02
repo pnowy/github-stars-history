@@ -13,8 +13,7 @@
     <a
       v-for="repo in stack.repos"
       :key="repo"
-      :class="{ 'panel-with-remove-button': !stack.predefined }"
-      class="panel-block">
+      class="panel-block panel-with-remove-button">
 
       <div>
         <span class="panel-icon">
@@ -27,14 +26,27 @@
         </span>
       </div>
 
-      <span v-if="!stack.predefined">
-        <a
-          class="button is-small"
-          @click="removeRepo(repo)"
-        >
-          remove
-        </a>
-      </span>
+      <div>
+        <span>
+          <a
+            :href="'https://github.com/' + repo"
+            class="button is-small source-code-button"
+            target="_blank"
+          >
+            <b-icon
+              pack="mdi"
+              icon="source-branch" />
+          </a>
+        </span>
+        <span v-if="!stack.predefined">
+          <a
+            class="button is-small"
+            @click="removeRepo(repo)"
+          >
+            remove
+          </a>
+        </span>
+      </div>
     </a>
 
     <div
@@ -90,5 +102,8 @@ export default {
 <style scoped>
 .panel-with-remove-button {
   justify-content: space-between;
+}
+.source-code-button {
+  margin-right: 5px;
 }
 </style>
