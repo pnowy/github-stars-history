@@ -61,6 +61,13 @@ export default {
       return this.$store.state.stacks;
     }
   },
+  mounted() {
+    this.$ga.page({
+      page: "/",
+      title: "Home page",
+      location: window.location.href
+    });
+  },
   methods: {
     async selectStack(stack) {
       this.selectedStack = stack;
