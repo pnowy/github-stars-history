@@ -5,12 +5,11 @@
     aria-label="main navigation">
     <div class="container">
       <div class="navbar-brand">
-
         <a
-          class="navbar-item has-background-primary has-text-weight-bold"
-          href="/#">
-          GITHUB STARS
-          <!--<img src="../assets/logo.png">-->
+          class="navbar-item"
+          href="#">
+          <img
+            src="../../assets/logo/logo_transparent_cut.png">
         </a>
 
         <!--<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">-->
