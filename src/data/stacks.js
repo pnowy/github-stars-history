@@ -52,13 +52,6 @@ const stacks = [
       "gatsbyjs/gatsby",
       "hexojs/hexo",
       "vuejs/vuepress",
-      "facebook/Docusaurus",
-      "GitbookIO/gitbook",
-      "imathis/octopress",
-      "getpelican/pelican",
-      "brunch/brunch",
-      "segmentio/metalsmith",
-      "middleman/middleman",
       "nuxt/nuxt.js"
     ],
     predefined: true
