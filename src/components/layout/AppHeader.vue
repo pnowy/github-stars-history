@@ -9,7 +9,9 @@
           class="navbar-item"
           href="#">
           <img
-            src="../../assets/logo/logo_transparent_cut.png">
+            src="../../assets/logo/logo_transparent_cut.png"
+            alt="Github Stars History"
+            class="logo" >
         </a>
 
         <!--<a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">-->
@@ -61,5 +63,8 @@ export default {
 <style scoped>
 .paragraph--padding-top {
   padding-top: 6px;
+}
+.logo {
+  max-height: 2.5rem;
 }
 </style>
