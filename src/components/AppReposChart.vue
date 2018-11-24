@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="reposData && reposData.length"
+    ref="chartContainer"
     class="chart__container"
   >
     <line-chart
@@ -92,7 +93,9 @@ export default {
       firebaseReposRef.child(encode(repo.name)).set(repo);
     },
     async reloadRepos() {
-      let loader = this.$loading.show();
+      let loader = this.$loading.show({
+        container: this.$refs.chartContainer
+      });
 
       const dataPromises = this.repos.map(repoName =>
         this.getRepoData(repoName)
