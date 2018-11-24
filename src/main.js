@@ -8,9 +8,14 @@ import VueChartkick from "vue-chartkick";
 import Highcharts from "highcharts";
 
 import Loading from "vue-loading-overlay";
-import "vue-loading-overlay/dist/vue-loading.min.css";
+import "vue-loading-overlay/dist/vue-loading.css";
 
-Vue.use(Buefy);
+import "@fortawesome/fontawesome-free/css/all.css";
+import "@fortawesome/fontawesome-free/css/fontawesome.css";
+
+Vue.use(Buefy, {
+  defaultIconPack: "fas"
+});
 Vue.use(VueChartkick, { adapter: Highcharts });
 Vue.use(Loading);
 Vue.use(VueAnalytics, {

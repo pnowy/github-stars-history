@@ -17,9 +17,7 @@
 
       <div>
         <span class="panel-icon">
-          <i
-            class="mdi mdi-file-chart"
-            aria-hidden="true"/>
+          <b-icon icon="file-code" />
         </span>
         <span>
           {{ repo }}
@@ -33,9 +31,7 @@
             class="button is-small source-code-button"
             target="_blank"
           >
-            <b-icon
-              pack="mdi"
-              icon="source-branch" />
+            <b-icon icon="code-branch" />
           </a>
         </span>
         <span v-if="!stack.predefined">

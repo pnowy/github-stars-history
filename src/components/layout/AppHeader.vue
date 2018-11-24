@@ -31,9 +31,7 @@
             href="https://github.com/pnowy/github-stars-history"
             target="_blank">
             <span class="button">
-              <b-icon
-                pack="mdi"
-                icon="github-circle" />
+              <b-icon icon="github" pack="fab" />
             </span>
           </a>
           <div class="navbar-item">
