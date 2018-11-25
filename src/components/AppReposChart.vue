@@ -1,16 +1,14 @@
 <template>
-  <div
-    v-if="reposData && reposData.length"
-    ref="chartContainer"
-    class="chart__container"
-  >
+  <div v-if="reposData && reposData.length" class="chart__container vld-parent">
+    <loading :active.sync="isLoading" :is-full-page="false"></loading>
+
     <line-chart
-      :library="config"
-      :data="reposData"
-      height="800px"
-      width="100%"
-      ytitle="Stars"
-      legend="top" />
+            :library="config"
+            :data="reposData"
+            height="800px"
+            width="100%"
+            ytitle="Stars"
+            legend="top" />
 
   </div>
 </template>
@@ -22,6 +20,7 @@ import notificationService from "@/services/notification.service";
 import firebase from "firebase/app";
 import "firebase/database";
 import { encode } from "firebase-encode";
+import Loading from "vue-loading-overlay";
 
 const config = {
   apiKey: "AIzaSyBPuZu6gbYL_IxW6UCYusHHrbzxHpsWNSE",
@@ -37,6 +36,9 @@ const firebaseReposRef = db.ref("repos");
 
 export default {
   name: "AppReposChart",
+  components: {
+    Loading
+  },
   props: {
     repos: {
       type: Array,
@@ -57,11 +59,12 @@ export default {
           }
         }
       },
-      reposData: []
+      reposData: [],
+      isLoading: false
     };
   },
   watch: {
-    repos: function(_old, _new) {
+    repos: function() {
       this.reloadRepos();
     }
   },
@@ -93,9 +96,7 @@ export default {
       firebaseReposRef.child(encode(repo.name)).set(repo);
     },
     async reloadRepos() {
-      let loader = this.$loading.show({
-        container: this.$refs.chartContainer
-      });
+      this.isLoading = true;
 
       const dataPromises = this.repos.map(repoName =>
         this.getRepoData(repoName)
@@ -107,7 +108,7 @@ export default {
           notificationService.error("Problem with stack repos data!", res);
         })
         .finally(() => {
-          loader.hide();
+          this.isLoading = false;
         });
 
       this.reposData.filter(repo => repo.fromGithubApi).forEach(repo => {
