@@ -15,6 +15,9 @@ const state = {
 
 const getters = {};
 
+const findIndexByStackId = stack =>
+  state.stacks.findIndex(el => el.id === stack.id);
+
 const mutations = {
   ...make.mutations(state),
 
@@ -22,11 +25,10 @@ const mutations = {
     state.stacks.push(stack);
   },
   deleteStack(state, { stack }) {
-    const indexToDelete = state.stacks.findIndex(item => item.id === stack.id);
-    state.stacks.splice(indexToDelete, 1);
+    state.stacks.splice(findIndexByStackId(stack), 1);
   },
   editStack(state, { stack }) {
-    state.stacks[state.stacks.findIndex(el => el.id === stack.id)] = stack;
+    state.stacks[findIndexByStackId(stack)] = stack;
   }
 };
 
