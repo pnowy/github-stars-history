@@ -67,6 +67,20 @@ const stacks = [
       "pnowy/django-cheat-sheet"
     ],
     predefined: true
+  },
+  {
+    id: "text-editors",
+    name: "text editors",
+    repos: [
+      "adobe/brackets",
+      "atom/atom",
+      "atom/xray",
+      "Microsoft/vscode",
+      "notepad-plus-plus/notepad-plus-plus",
+      "onivim/oni",
+      "syl20bnr/spacemacs"
+    ],
+    predefined: true
   }
 ];
 
