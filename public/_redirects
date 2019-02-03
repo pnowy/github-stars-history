@@ -1,0 +1,2 @@
+# Redirect default Netlify subdomain to primary domain
+https://github-stars-history.netlify.com/* https://stars.przemeknowak.com/:splat 301!
