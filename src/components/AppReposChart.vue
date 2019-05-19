@@ -3,13 +3,13 @@
     <loading :active.sync="isLoading" :is-full-page="false"></loading>
 
     <line-chart
-            :library="config"
-            :data="reposData"
-            height="800px"
-            width="100%"
-            ytitle="Stars"
-            legend="top" />
-
+      :library="config"
+      :data="reposData"
+      height="800px"
+      width="100%"
+      ytitle="Stars"
+      legend="top"
+    />
   </div>
 </template>
 
@@ -32,7 +32,7 @@ const config = {
 };
 const firebaseApp = firebase.initializeApp(config);
 const db = firebaseApp.database();
-const firebaseReposRef = db.ref("repos");
+const firebaseReposRef = db.ref("repos_v2");
 
 export default {
   name: "AppReposChart",
@@ -111,9 +111,11 @@ export default {
           this.isLoading = false;
         });
 
-      this.reposData.filter(repo => repo.fromGithubApi).forEach(repo => {
-        this.saveRepoToStore(repo);
-      });
+      this.reposData
+        .filter(repo => repo.fromGithubApi)
+        .forEach(repo => {
+          this.saveRepoToStore(repo);
+        });
     }
   }
 };
