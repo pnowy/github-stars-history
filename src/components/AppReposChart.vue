@@ -72,6 +72,28 @@ export default {
     this.reloadRepos();
   },
   methods: {
+    async reloadRepos() {
+      this.isLoading = true;
+
+      const dataPromises = this.repos.map(repoName =>
+        this.getRepoData(repoName)
+      );
+
+      this.reposData = await Promise.all(dataPromises)
+        .catch(res => {
+          this.reposData = [];
+          notificationService.error("Problem with stack repos data!", res);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+
+      this.reposData
+        .filter(repo => repo.fromGithubApi)
+        .forEach(repo => {
+          this.saveRepoToStore(repo);
+        });
+    },
     getRepoData(repoName) {
       return new Promise((resolve, _reject) => {
         const now = DateTime.utc();
@@ -94,28 +116,6 @@ export default {
     saveRepoToStore(repo) {
       delete repo["fromGithubApi"]; // delete before save to firebase
       firebaseReposRef.child(encode(repo.name)).set(repo);
-    },
-    async reloadRepos() {
-      this.isLoading = true;
-
-      const dataPromises = this.repos.map(repoName =>
-        this.getRepoData(repoName)
-      );
-
-      this.reposData = await Promise.all(dataPromises)
-        .catch(res => {
-          this.reposData = [];
-          notificationService.error("Problem with stack repos data!", res);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-
-      this.reposData
-        .filter(repo => repo.fromGithubApi)
-        .forEach(repo => {
-          this.saveRepoToStore(repo);
-        });
     }
   }
 };
