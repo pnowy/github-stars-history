@@ -89,20 +89,34 @@ export default {
         });
 
       this.reposData
-        .filter(repo => repo.fromGithubApi)
+        .filter(repo => repo.refreshed)
         .forEach(repo => {
           this.saveRepoToStore(repo);
         });
     },
+    shouldRefreshRepo(repo) {
+      const now = DateTime.utc();
+      return (
+        repo &&
+        repo.refreshAfter &&
+        now > DateTime.fromISO(repo.refreshAfter, { zone: "utc" })
+      );
+    },
     getRepoData(repoName) {
       return new Promise((resolve, _reject) => {
-        const now = DateTime.utc();
         firebaseReposRef.child(encode(repoName)).on("value", snapshot => {
-          let val = snapshot.val();
-          if (val && val.validUntil && now < DateTime.fromISO(val.validUntil)) {
-            resolve(val);
+          let repo = snapshot.val();
+          if (!repo || this.shouldRefreshRepo(repo)) {
+            const repoVar = repo || {};
+            resolve(
+              starHistoryService.getStarHistory(
+                repoName,
+                repoVar.lastPage,
+                repoVar.data
+              )
+            );
           } else {
-            resolve(starHistoryService.getStarHistory(repoName));
+            resolve(repo);
           }
         });
       }).catch(e => {
@@ -114,7 +128,7 @@ export default {
       });
     },
     saveRepoToStore(repo) {
-      delete repo["fromGithubApi"]; // delete before save to firebase
+      delete repo["refreshed"]; // delete before save to firebase
       firebaseReposRef.child(encode(repo.name)).set(repo);
     }
   }

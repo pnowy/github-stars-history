@@ -3,27 +3,25 @@ import { DateTime } from "luxon";
 import _ from "lodash";
 
 const NUMBER_OF_SAMPLES = 30; // number of samples for chart
-const CACHE_RETENTION_DAYS = 7;
-
-const range = (from, to, step) =>
-  Array(Math.floor((to - from) / step) + 1)
-    .fill(0)
-    .map((_v, i) => from + i * step);
+const CHECK_NEW_STARS_AFTER_DAYS = 7;
 
 /**
  * Creates single chart item
- * @param repoName {String} repository name
+ *
+ * @param repoName {string} repository name
  * @param repoData {Object} repository data
+ * @param lastPage {number} last page with data
  */
-const buildChartItem = (repoName, repoData) => {
-  const validUntil = DateTime.utc()
-    .plus({ days: CACHE_RETENTION_DAYS })
+const buildChartItem = (repoName, repoData, lastPage) => {
+  const refreshAfter = DateTime.utc()
+    .plus({ days: CHECK_NEW_STARS_AFTER_DAYS })
     .toISO();
   return {
     name: repoName,
     data: repoData,
-    fromGithubApi: true,
-    validUntil
+    refreshAfter,
+    lastPage,
+    refreshed: true
   };
 };
 
@@ -42,12 +40,15 @@ const convertError = (repoName, res) => {
 /**
  * Get star history
  * @param {string} repoName - eg: 'pnowy/NativeCriteria'
+ * @param {number} lastPage - load results from given page
+ * @param {Object} currentData - repo data
+ *
  * @return {object} history - eg: { "2015-03-01": 12 }
  */
-async function getStarHistory(repoName) {
+async function getStarHistory(repoName, lastPage = 0, currentData) {
   const querySpecification = [];
 
-  const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
+  let initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
   const initRes = await http.get(initUrl).catch(res => {
     return convertError(repoName, res);
   });
@@ -59,7 +60,7 @@ async function getStarHistory(repoName) {
    */
   const link = initRes.headers.link;
 
-  // repos with less than 30 stars
+  // repos with less than 30 stars (single page)
   if (!link) {
     const repoData = {};
     let initRequestData = initRes.data;
@@ -67,21 +68,28 @@ async function getStarHistory(repoName) {
       // star date : star numbers
       repoData[`${initRequestData[i].starred_at.slice(0, 10)}`] = i + 1;
     }
-    return buildChartItem(repoName, repoData);
+    return buildChartItem(repoName, repoData, lastPage);
   }
 
   const totalPageNum = /next.*?page=(\d*).*?last/.exec(link)[1]; // total page number
+  const pagesToLoad = totalPageNum - lastPage;
+  // just in case if there is no pages to load return current data
+  if (pagesToLoad === 0 && currentData) {
+    return buildChartItem(repoName, currentData, totalPageNum);
+  }
 
-  if (totalPageNum <= NUMBER_OF_SAMPLES) {
+  if (pagesToLoad <= NUMBER_OF_SAMPLES) {
     // for repos which have less than 30 pages we have to get more than one sample per page
-    const samplesForPage = parseInt(NUMBER_OF_SAMPLES / totalPageNum, 10);
+    const samplesForPage = parseInt(NUMBER_OF_SAMPLES / pagesToLoad, 10);
     // count step (to get indexes)
     const step = NUMBER_OF_SAMPLES / samplesForPage;
     // generate array with indexes by counted step
-    const dataIndexes = range(0, NUMBER_OF_SAMPLES, step);
+    const dataIndexes = _.range(0, NUMBER_OF_SAMPLES, step).map(v =>
+      Math.floor(v)
+    );
     // limit array if more that expected number of samples per page
     dataIndexes.length = samplesForPage;
-    for (let i = 1; i <= totalPageNum; i++) {
+    for (let i = lastPage; i <= totalPageNum; i++) {
       querySpecification.push({
         url: initUrl + "?page=" + i,
         pageIndex: i,
@@ -90,8 +98,8 @@ async function getStarHistory(repoName) {
     }
   } else {
     // for repos with more than 30 pages get only single item from page (to keep 30 samples for chart)
-    for (let i = 1; i <= NUMBER_OF_SAMPLES; i++) {
-      const pageIndex = Math.round((i / NUMBER_OF_SAMPLES) * totalPageNum) - 1;
+    for (let i = lastPage; i <= NUMBER_OF_SAMPLES; i++) {
+      const pageIndex = Math.round((i / NUMBER_OF_SAMPLES) * pagesToLoad) - 1;
       querySpecification.push({
         url: initUrl + "?page=" + pageIndex,
         pageIndex,
@@ -132,7 +140,8 @@ async function getStarHistory(repoName) {
 
   const repoData = {};
   starHistory.forEach(item => (repoData[item.date] = item.starNum));
-  return buildChartItem(repoName, repoData);
+  const concatenatedData = Object.assign(currentData || {}, repoData);
+  return buildChartItem(repoName, concatenatedData, totalPageNum);
 }
 
 export default { getStarHistory };
