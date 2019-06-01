@@ -3,13 +3,13 @@
     <loading :active.sync="isLoading" :is-full-page="false"></loading>
 
     <line-chart
-            :library="config"
-            :data="reposData"
-            height="800px"
-            width="100%"
-            ytitle="Stars"
-            legend="top" />
-
+      :library="config"
+      :data="reposData"
+      height="800px"
+      width="100%"
+      ytitle="Stars"
+      legend="top"
+    />
   </div>
 </template>
 
@@ -32,7 +32,7 @@ const config = {
 };
 const firebaseApp = firebase.initializeApp(config);
 const db = firebaseApp.database();
-const firebaseReposRef = db.ref("repos");
+const firebaseReposRef = db.ref("repos_v2");
 
 export default {
   name: "AppReposChart",
@@ -72,29 +72,6 @@ export default {
     this.reloadRepos();
   },
   methods: {
-    getRepoData(repoName) {
-      return new Promise((resolve, _reject) => {
-        const now = DateTime.utc();
-        firebaseReposRef.child(encode(repoName)).on("value", snapshot => {
-          let val = snapshot.val();
-          if (val && val.validUntil && now < DateTime.fromISO(val.validUntil)) {
-            resolve(val);
-          } else {
-            resolve(starHistoryService.getStarHistory(repoName));
-          }
-        });
-      }).catch(e => {
-        notificationService.error(e.statusText);
-        return {
-          name: repoName,
-          data: []
-        };
-      });
-    },
-    saveRepoToStore(repo) {
-      delete repo["fromGithubApi"]; // delete before save to firebase
-      firebaseReposRef.child(encode(repo.name)).set(repo);
-    },
     async reloadRepos() {
       this.isLoading = true;
 
@@ -111,9 +88,48 @@ export default {
           this.isLoading = false;
         });
 
-      this.reposData.filter(repo => repo.fromGithubApi).forEach(repo => {
-        this.saveRepoToStore(repo);
+      this.reposData
+        .filter(repo => repo.refreshed)
+        .forEach(repo => {
+          this.saveRepoToStore(repo);
+        });
+    },
+    shouldRefreshRepo(repo) {
+      const now = DateTime.utc();
+      return (
+        repo &&
+        repo.refreshAfter &&
+        now > DateTime.fromISO(repo.refreshAfter, { zone: "utc" })
+      );
+    },
+    getRepoData(repoName) {
+      return new Promise((resolve, _reject) => {
+        firebaseReposRef.child(encode(repoName)).on("value", snapshot => {
+          let repo = snapshot.val();
+          if (!repo || this.shouldRefreshRepo(repo)) {
+            const repoVar = repo || {};
+            resolve(
+              starHistoryService.getStarHistory(
+                repoName,
+                repoVar.lastPage,
+                repoVar.data
+              )
+            );
+          } else {
+            resolve(repo);
+          }
+        });
+      }).catch(e => {
+        notificationService.error(e.statusText);
+        return {
+          name: repoName,
+          data: []
+        };
       });
+    },
+    saveRepoToStore(repo) {
+      delete repo["refreshed"]; // delete before save to firebase
+      firebaseReposRef.child(encode(repo.name)).set(repo);
     }
   }
 };
