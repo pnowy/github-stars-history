@@ -1,17 +1,14 @@
 <template>
-  <span/>
+  <span></span>
 </template>
 
-<script>
-import eventBusService from "@/services/eventBus.service";
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+  import eventBusService from '@/services/event-bus.service';
 
-export default {
-  name: "AppNotifications",
-  mounted() {
-    this.catchHttpErrors();
-  },
-  methods: {
-    catchHttpErrors() {
+  @Component
+  export default class AppNotifications extends Vue {
+    private catchHttpErrors() {
       // EventBus.$on("SERVER_ERROR", response => {
       //   const { data } = response;
       //   if (data && data["project-code"]) {
@@ -33,11 +30,11 @@ export default {
       //   this.showError("errors.SETUP_REQUEST_ERROR", message);
       // });
       //
-      eventBusService.$on("NOTIFICATION_SUCCESS", message => {
+      eventBusService.$on('NOTIFICATION_SUCCESS', (message: string) => {
         this.showSuccess(message);
       });
 
-      eventBusService.$on("NOTIFICATION_ERROR", message => {
+      eventBusService.$on('NOTIFICATION_ERROR', (message: string) => {
         this.showError(message);
       });
 
@@ -45,27 +42,31 @@ export default {
       // EventBus.$on("UNAUTHORIZED_ACCESS", () => {
       //   this.$router.push({ name: "login" });
       // });
-    },
-    showError(text) {
+    }
+
+    private showError(text: string) {
+      // @ts-ignore
       this.$snackbar.open({
         duration: 5000,
         message: text,
-        type: "is-danger",
-        position: "is-top",
-        queue: false
-      });
-    },
-    showSuccess(text) {
-      this.$snackbar.open({
-        duration: 5000,
-        message: text,
-        position: "is-top",
-        queue: false
+        type: 'is-danger',
+        position: 'is-top',
+        queue: false,
       });
     }
-  }
-};
-</script>
 
-<style scoped>
-</style>
+    private showSuccess(text: string) {
+      // @ts-ignore
+      this.$snackbar.open({
+        duration: 5000,
+        message: text,
+        position: 'is-top',
+        queue: false,
+      });
+    }
+
+    private mounted() {
+      this.catchHttpErrors();
+    }
+  }
+</script>

@@ -1,49 +1,58 @@
 <template>
-  <div
-    id="app"
-    class="site"
-  >
-    <app-header />
+  <div id="app" class="site">
+    <app-header/>
 
     <div class="site__content">
-      <app-home />
+      <section class="section">
+        <div class="container">
+          <router-view/>
+        </div>
+      </section>
     </div>
 
-    <app-notifications />
+    <app-notifications/>
 
-    <app-footer />
+    <app-footer/>
   </div>
+
 </template>
 
-<script>
-import AppHeader from "@/components/layout/AppHeader";
-import AppFooter from "@/components/layout/AppFooter";
-import AppNotifications from "@/components/layout/AppNotifications";
-import AppHome from "@/components/AppHome";
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+  import AppHeader from '@/components/layout/AppHeader.vue';
+  import AppFooter from '@/components/layout/AppFooter.vue';
+  import AppNotifications from '@/components/layout/AppNotifications.vue';
 
-export default {
-  components: { AppHeader, AppFooter, AppHome, AppNotifications }
-};
+  @Component({
+    components: {
+      AppFooter,
+      AppHeader,
+      AppNotifications,
+    },
+  })
+  export default class App extends Vue {
+  }
 </script>
 
 <style lang="scss">
-.site {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-}
+  .site {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
 
-.site__content {
-  flex: 1;
-}
-// Import Bulma's core
+  .site__content {
+    flex: 1;
+  }
 
-// Set your colors
-// $primary: #f15848;
+  // Import Bulma's core
 
-@import "~bulma/sass/utilities/_all";
+  // Set your colors
+  // $primary: #f15848;
 
-// Import Bulma and Buefy styles
-@import "~bulma";
-@import "~buefy/src/scss/buefy";
+  @import "~bulma/sass/utilities/_all";
+
+  // Import Bulma and Buefy styles
+  @import "~bulma";
+  @import "~buefy/src/scss/buefy";
 </style>

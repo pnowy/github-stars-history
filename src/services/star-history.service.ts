@@ -1,8 +1,9 @@
-import { http } from "@/services/http.service";
-import { DateTime } from "luxon";
-import _ from "lodash";
+/* tslint:disable:max-line-length */
+import {http} from '@/services/http.service';
+import {DateTime} from 'luxon';
+import _ from 'lodash';
 
-const NUMBER_OF_SAMPLES = 30; // number of samples for chart
+const NUMBER_OF_SAMPLES: number = 30; // number of samples for chart
 const CHECK_NEW_STARS_AFTER_DAYS = 7;
 
 /**
@@ -12,28 +13,28 @@ const CHECK_NEW_STARS_AFTER_DAYS = 7;
  * @param repoData {Object} repository data
  * @param lastPage {number} last page with data
  */
-const buildChartItem = (repoName, repoData, lastPage) => {
+const buildChartItem = (repoName: string, repoData: any, lastPage: any) => {
   const refreshAfter = DateTime.utc()
-    .plus({ days: CHECK_NEW_STARS_AFTER_DAYS })
+    .plus({days: CHECK_NEW_STARS_AFTER_DAYS})
     .toISO();
   return {
     name: repoName,
     data: repoData,
     refreshAfter,
     lastPage,
-    refreshed: true
+    refreshed: true,
   };
 };
 
 /**
  * Converts error to internal structure.
  */
-const convertError = (repoName, res) => {
-  const { data, status, statusText } = res.response;
+const convertError = (repoName: string, res: any) => {
+  const {data, status, statusText} = res.response;
   throw {
     data,
     status,
-    statusText: `Repository '${repoName}' ${statusText}`
+    statusText: `Repository '${repoName}' ${statusText}`,
   };
 };
 
@@ -45,11 +46,11 @@ const convertError = (repoName, res) => {
  *
  * @return {object} history - eg: { "2015-03-01": 12 }
  */
-async function getStarHistory(repoName, lastPage = 0, currentData) {
+async function getStarHistory(repoName: string, lastPage = 0, currentData: any) {
   const querySpecification = [];
 
-  let initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
-  const initRes = await http.get(initUrl).catch(res => {
+  const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
+  const initRes = await http.get(initUrl).catch((res) => {
     return convertError(repoName, res);
   });
 
@@ -62,8 +63,9 @@ async function getStarHistory(repoName, lastPage = 0, currentData) {
 
   // repos with less than 30 stars (single page)
   if (!link) {
-    const repoData = {};
-    let initRequestData = initRes.data;
+    // tslint:disable-next-line:no-shadowed-variable
+    const repoData: any = {};
+    const initRequestData = initRes.data;
     for (let i = 0; i < initRequestData.length; i++) {
       // star date : star numbers
       repoData[`${initRequestData[i].starred_at.slice(0, 10)}`] = i + 1;
@@ -71,8 +73,9 @@ async function getStarHistory(repoName, lastPage = 0, currentData) {
     return buildChartItem(repoName, repoData, lastPage);
   }
 
-  const totalPageNum = /next.*?page=(\d*).*?last/.exec(link)[1]; // total page number
-  const pagesToLoad = totalPageNum - lastPage;
+  // @ts-ignore
+  const totalPageNum: any = /next.*?page=(\d*).*?last/.exec(link)[1]; // total page number
+  const pagesToLoad: number = totalPageNum - lastPage;
   // just in case if there is no pages to load return current data
   if (pagesToLoad === 0 && currentData) {
     return buildChartItem(repoName, currentData, totalPageNum);
@@ -80,20 +83,21 @@ async function getStarHistory(repoName, lastPage = 0, currentData) {
 
   if (pagesToLoad <= NUMBER_OF_SAMPLES) {
     // for repos which have less than 30 pages we have to get more than one sample per page
-    const samplesForPage = parseInt(NUMBER_OF_SAMPLES / pagesToLoad, 10);
+    // @ts-ignore
+    const samplesForPage: number = parseInt(NUMBER_OF_SAMPLES / pagesToLoad, 10);
     // count step (to get indexes)
     const step = NUMBER_OF_SAMPLES / samplesForPage;
     // generate array with indexes by counted step
-    const dataIndexes = _.range(0, NUMBER_OF_SAMPLES, step).map(v =>
-      Math.floor(v)
+    const dataIndexes = _.range(0, NUMBER_OF_SAMPLES, step).map((v) =>
+      Math.floor(v),
     );
     // limit array if more that expected number of samples per page
     dataIndexes.length = samplesForPage;
     for (let i = lastPage; i <= totalPageNum; i++) {
       querySpecification.push({
-        url: initUrl + "?page=" + i,
+        url: initUrl + '?page=' + i,
         pageIndex: i,
-        dataIndexes
+        dataIndexes,
       });
     }
   } else {
@@ -101,27 +105,27 @@ async function getStarHistory(repoName, lastPage = 0, currentData) {
     for (let i = lastPage; i <= NUMBER_OF_SAMPLES; i++) {
       const pageIndex = Math.round((i / NUMBER_OF_SAMPLES) * pagesToLoad) - 1;
       querySpecification.push({
-        url: initUrl + "?page=" + pageIndex,
+        url: initUrl + '?page=' + pageIndex,
         pageIndex,
-        dataIndexes: [0]
+        dataIndexes: [0],
       });
     }
   }
 
-  const queryPromises = querySpecification.map(r => http.get(r.url));
-  const responses = await Promise.all(queryPromises).catch(res => {
+  const queryPromises = querySpecification.map((r) => http.get(r.url));
+  const responses = await Promise.all(queryPromises).catch((res) => {
     return convertError(repoName, res);
   });
 
   const starHistory = _.flatMap(querySpecification, (spec, index) => {
-    const { data } = responses[index];
+    const {data} = responses[index];
     // retrieve data under specified indexes on given page
     return spec.dataIndexes
-      .filter(dataIndex => dataIndex < data.length) // skip latest not full pages
-      .map(dataIndex => {
+      .filter((dataIndex) => dataIndex < data.length) // skip latest not full pages
+      .map((dataIndex) => {
         return {
           date: data[dataIndex].starred_at.slice(0, 10),
-          starNum: 30 * (spec.pageIndex - 1) + dataIndex
+          starNum: 30 * (spec.pageIndex - 1) + dataIndex,
         };
       });
   });
@@ -129,22 +133,22 @@ async function getStarHistory(repoName, lastPage = 0, currentData) {
   // Stars number for today (better view for repos with too much stars (>40000))
   const currentStarsNumberResponse = await http
     .get(`https://api.github.com/repos/${repoName}`)
-    .catch(res => {
+    .catch((res) => {
       return convertError(repoName, res);
     });
   const starNumToday = currentStarsNumberResponse.data.stargazers_count;
   starHistory.push({
     date: DateTime.utc().toISODate(),
-    starNum: starNumToday
+    starNum: starNumToday,
   });
 
-  const repoData = {};
-  starHistory.forEach(item => (repoData[item.date] = item.starNum));
+  const repoData: any = {};
+  starHistory.forEach((item) => (repoData[item.date] = item.starNum));
   const concatenatedData = Object.assign(currentData || {}, repoData);
   return buildChartItem(repoName, concatenatedData, totalPageNum);
 }
 
-export default { getStarHistory };
+export default {getStarHistory};
 
 // graphql query for version API 4
 
