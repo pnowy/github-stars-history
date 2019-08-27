@@ -23,7 +23,7 @@ Please remember that predefined stack needs `predefined: true` property in order
 
 ## Technology
 
-The frontend part is written in [Vue.js](https://vuejs.org/) framework. The visual part has been made with [Bulma CSS framework](https://bulma.io/).
+The frontend part is written in [Vue.js](https://vuejs.org/) framework with Typescript support. The visual part has been made with [Bulma CSS framework](https://bulma.io/).
 
 Under the hood the stars are cached in the Firebase database (because the Github API has limits chart data is saved in Firebase
 for some limited time).

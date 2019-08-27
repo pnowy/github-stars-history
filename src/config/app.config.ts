@@ -1,9 +1,9 @@
 const defaults = {
   persistedStore: {
-    name: "pnowy.github-stars.store"
-  }
+    name: 'pnowy.github-stars.store',
+  },
 };
 
 export default {
-  defaults
+  defaults,
 };

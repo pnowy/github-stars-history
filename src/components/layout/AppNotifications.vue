@@ -1,71 +1,46 @@
 <template>
-  <span/>
+  <span></span>
 </template>
 
-<script>
-import eventBusService from "@/services/eventBus.service";
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+  import eventBusService from '@/services/event-bus.service';
 
-export default {
-  name: "AppNotifications",
-  mounted() {
-    this.catchHttpErrors();
-  },
-  methods: {
-    catchHttpErrors() {
-      // EventBus.$on("SERVER_ERROR", response => {
-      //   const { data } = response;
-      //   if (data && data["project-code"]) {
-      //     const code = data["project-code"];
-      //     const params = data["project-params"];
-      //     this.showError(`errors.${code}`, params);
-      //   } else if (data.title) {
-      //     this.showError(data.title);
-      //   } else {
-      //     this.showError(data.error);
-      //   }
-      // });
-      //
-      // EventBus.$on("NO_RESPONSE_ERROR", request => {
-      //   this.showError("errors.NO_RESPONSE_ERROR", request);
-      // });
-      //
-      // EventBus.$on("SETUP_REQUEST_ERROR", message => {
-      //   this.showError("errors.SETUP_REQUEST_ERROR", message);
-      // });
-      //
-      eventBusService.$on("NOTIFICATION_SUCCESS", message => {
+  @Component
+  export default class AppNotifications extends Vue {
+    private catchHttpErrors() {
+
+      eventBusService.$on('NOTIFICATION_SUCCESS', (message: string) => {
         this.showSuccess(message);
       });
 
-      eventBusService.$on("NOTIFICATION_ERROR", message => {
+      eventBusService.$on('NOTIFICATION_ERROR', (message: string) => {
         this.showError(message);
       });
 
-      // token expired - forward to login
-      // EventBus.$on("UNAUTHORIZED_ACCESS", () => {
-      //   this.$router.push({ name: "login" });
-      // });
-    },
-    showError(text) {
-      this.$snackbar.open({
+    }
+
+    private showError(text: string) {
+      this.$buefy.snackbar.open({
         duration: 5000,
         message: text,
-        type: "is-danger",
-        position: "is-top",
-        queue: false
-      });
-    },
-    showSuccess(text) {
-      this.$snackbar.open({
-        duration: 5000,
-        message: text,
-        position: "is-top",
-        queue: false
+        type: 'is-danger',
+        position: 'is-top',
+        queue: false,
       });
     }
-  }
-};
-</script>
 
-<style scoped>
-</style>
+    private showSuccess(text: string) {
+      this.$buefy.snackbar.open({
+        duration: 5000,
+        message: text,
+        position: 'is-top',
+        queue: false,
+      });
+    }
+
+    private mounted() {
+      this.catchHttpErrors();
+    }
+  }
+</script>

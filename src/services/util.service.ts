@@ -4,20 +4,23 @@ const guid = () => {
       .toString(16)
       .substring(1);
   }
+
   return (
     s4() +
     s4() +
-    "-" +
+    '-' +
     s4() +
-    "-" +
+    '-' +
     s4() +
-    "-" +
+    '-' +
     s4() +
-    "-" +
+    '-' +
     s4() +
     s4() +
     s4()
   );
 };
 
-export { guid };
+export default {
+  guid,
+};
