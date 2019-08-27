@@ -26,7 +26,7 @@
   import AppStacksPanel from '@/components/AppStacksPanel.vue';
   import AppReposPanel from '@/components/AppReposPanel.vue';
   import AppReposChart from '@/components/AppReposChart.vue';
-  import utilService from '@/services/util.service';
+  import Utils from '@/services/utils';
   import {Stack} from '@/models';
 
   @Component({
@@ -36,7 +36,7 @@
       AppReposChart,
     },
   })
-  export default class AppHome extends Vue {
+  export default class AppIndex extends Vue {
     private selectedStack: Stack | null = null;
 
     get stacks() {
@@ -49,7 +49,7 @@
 
     private addStack(stackName: string) {
       const stack: Stack = {
-        id: utilService.guid(),
+        id: Utils.generateUuid(),
         name: stackName,
         repos: [],
       };
