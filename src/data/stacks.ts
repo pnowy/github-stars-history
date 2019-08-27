@@ -9,8 +9,6 @@ const stacks: Stack[] = [
       'angular/angular.js',
       'vuejs/vue',
       'facebook/react',
-      'jashkenas/backbone',
-      'emberjs/ember.js',
       'jquery/jquery',
     ],
     predefined: true,
