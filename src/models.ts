@@ -15,3 +15,8 @@ export interface Repository {
   lastRefreshDate: string;
   requiredCacheUpdate?: boolean;
 }
+
+export interface FetchStarsError {
+  status: number;
+  statusText: string;
+}

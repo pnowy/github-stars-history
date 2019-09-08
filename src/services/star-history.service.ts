@@ -3,9 +3,15 @@
 import {http} from '@/services/http.service';
 import {DateTime} from 'luxon';
 import _ from 'lodash';
-import {ChartItems, Repository} from '@/models';
+import {ChartItems, FetchStarsError, Repository} from '@/models';
 
 const NUMBER_OF_SAMPLES: number = 30; // number of samples for chart
+
+interface QuerySpecItem {
+  url: string;
+  pageIndex: number;
+  dataIndexes: number[];
+}
 
 /**
  * Creates single chart item
@@ -25,24 +31,13 @@ function createRepository(repoName: string, chartItems: ChartItems): Repository 
 /**
  * Converts error to internal structure.
  */
-const convertError = (repoName: string, res: any) => {
-  const {data, status, statusText} = res.response;
-  let description = null;
-  if (status === 403) {
-    description = 'Unfortunately the limit of request to GitHub has been exceeded :(';
-  }
+function convertError(repoName: string, res: any): FetchStarsError {
+  const { status, statusText } = res.response;
+  const forbidden = status === 403;
   throw {
-    data,
     status,
-    statusText: `Repository '${repoName}' ${statusText}`,
-    description,
+    statusText: forbidden ? 'Unfortunately the limit of request to GitHub has been exceeded :(' : `Repository '${repoName}' ${statusText}`,
   };
-};
-
-interface QuerySpecItem {
-  url: string;
-  pageIndex: number;
-  dataIndexes: number[];
 }
 
 async function fetchCurrentStars(repository: Repository): Promise<Repository> {
@@ -122,8 +117,10 @@ async function getStarHistory(repoName: string): Promise<Repository> {
     }
   }
 
-  const queryPromises: Array<Promise<any>> = querySpecification.map((querySpecItem) => http.get(querySpecItem.url));
-  const responses = await Promise.all(queryPromises).catch((res) => {
+  const queryPromises: Array<Promise<any>> = querySpecification.map(
+    (querySpecItem) => http.get(querySpecItem.url),
+  );
+  const responses: any = await Promise.all(queryPromises).catch((res) => {
     return convertError(repoName, res);
   });
 
