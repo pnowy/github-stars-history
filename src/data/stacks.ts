@@ -63,8 +63,6 @@ const stacks: Stack[] = [
       'pnowy/github-stars-history',
       'pnowy/NativeCriteria',
       'pnowy/git-cheat-sheet',
-      'pnowy/intellij-color-theme',
-      'pnowy/django-cheat-sheet',
     ],
     predefined: true,
   },

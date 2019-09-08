@@ -22,7 +22,7 @@ interface QuerySpecItem {
 function createRepository(repoName: string, chartItems: ChartItems): Repository {
   return {
     name: repoName,
-    data: chartItems,
+    data: chartItems || {},
     lastRefreshDate: DateTime.utc().toISO(),
     requiredCacheUpdate: true,
   };
@@ -46,6 +46,9 @@ async function fetchCurrentStars(repository: Repository): Promise<Repository> {
     .catch((res) => {
       return convertError(repository.name, res);
     });
+  if (!repository.data) {
+    repository.data = {};
+  }
   repository.data[DateTime.utc().toISODate()] = currentStarsNumberResponse.data.stargazers_count;
   repository.requiredCacheUpdate = true;
   repository.lastRefreshDate = DateTime.utc().toISO();

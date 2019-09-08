@@ -11,6 +11,7 @@
 
     <div v-if="reposData && reposData.length">
       <line-chart
+              ref="chart"
               :library="config"
               :data="reposData"
               height="800px"
@@ -20,11 +21,18 @@
       />
     </div>
 
+    <div class="columns">
+      <div class="column has-text-centered">
+        <button class="button is-primary is-small" @click="download">Download PNG</button>
+      </div>
+    </div>
+
   </div>
 </template>
 <script lang="ts">
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {DateTime} from 'luxon';
+import html2canvas from 'html2canvas';
 import starHistoryService from '@/services/star-history.service';
 import notificationService from '@/services/notification.service';
 import firebase from 'firebase/app';
@@ -104,6 +112,16 @@ export default class AppReposChart extends Vue {
           _.remove(this.loaders, (li) => li.repoName === repoName);
           this.$forceUpdate();
         });
+    });
+  }
+
+  private download() {
+    // @ts-ignore
+    html2canvas(this.$refs.chart.$el).then((canvas) => {
+      const link = document.createElement('a');
+      link.download = 'stars.png';
+      link.href = canvas.toDataURL();
+      link.click();
     });
   }
 
