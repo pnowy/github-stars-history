@@ -19,12 +19,13 @@
               ytitle="Stars"
               legend="top"
       />
-    </div>
 
-    <div class="columns">
-      <div class="column has-text-centered">
-        <button class="button is-primary is-small" @click="download">Download PNG</button>
+      <div class="columns">
+        <div class="column has-text-centered">
+          <button class="button is-primary is-small" @click="download">Download PNG</button>
+        </div>
       </div>
+
     </div>
 
   </div>
@@ -63,6 +64,7 @@ export interface LoadingItem {
   components: {},
 })
 export default class AppReposChart extends Vue {
+  @Prop() public stackName!: string;
   @Prop() public repos!: string[];
 
   private reposData: Repository[] = [];
@@ -119,7 +121,7 @@ export default class AppReposChart extends Vue {
     // @ts-ignore
     html2canvas(this.$refs.chart.$el).then((canvas) => {
       const link = document.createElement('a');
-      link.download = 'stars.png';
+      link.download = `${this.stackName || 'stars'}.png`;
       link.href = canvas.toDataURL();
       link.click();
     });

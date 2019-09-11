@@ -14,7 +14,7 @@
 
     <div class="column">
       <div class="columns is-centered is-vcentered">
-        <app-repos-chart v-if="selectedStack" :repos="selectedStack.repos"/>
+        <app-repos-chart v-if="selectedStack" :repos="selectedStack.repos" :stack-name="selectedStack.name" />
       </div>
     </div>
 
