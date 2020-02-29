@@ -6,6 +6,7 @@ import _ from 'lodash';
 import {ChartItems, FetchStarsError, Repository} from '@/models';
 
 const NUMBER_OF_SAMPLES: number = 30; // number of samples for chart
+const PAGE_SIZE = 100
 
 interface QuerySpecItem {
   url: string;
@@ -64,7 +65,7 @@ async function fetchCurrentStars(repository: Repository): Promise<Repository> {
 async function getStarHistory(repoName: string): Promise<Repository> {
   const querySpecification: QuerySpecItem[] = [];
 
-  const initUrl = `https://api.github.com/repos/${repoName}/stargazers`; // used to get star info
+  const initUrl = `https://api.github.com/repos/${repoName}/stargazers?per_page=${PAGE_SIZE}`; // used to get star info
   const initRes: any = await http.get(initUrl).catch((res) => {
     return convertError(repoName, res);
   });
@@ -94,16 +95,16 @@ async function getStarHistory(repoName: string): Promise<Repository> {
     // @ts-ignore
     const samplesForPage: number = parseInt(NUMBER_OF_SAMPLES / totalPageNum, 10);
     // count step (to get indexes)
-    const step = NUMBER_OF_SAMPLES / samplesForPage;
+    const step = PAGE_SIZE / samplesForPage;
     // generate array with indexes by counted step
-    const dataIndexes = _.range(0, NUMBER_OF_SAMPLES, step).map((v) =>
+    const dataIndexes = _.range(0, PAGE_SIZE, step).map((v) =>
       Math.floor(v),
     );
     // limit array if more that expected number of samples per page
     dataIndexes.length = samplesForPage;
     for (let i = 1; i <= totalPageNum; i++) {
       querySpecification.push({
-        url: initUrl + '?page=' + i,
+        url: initUrl + '&page=' + i,
         pageIndex: i,
         dataIndexes,
       });
@@ -113,7 +114,7 @@ async function getStarHistory(repoName: string): Promise<Repository> {
     for (let i = 1; i <= NUMBER_OF_SAMPLES; i++) {
       const pageIndex = Math.round((i / NUMBER_OF_SAMPLES) * totalPageNum) - 1;
       querySpecification.push({
-        url: initUrl + '?page=' + pageIndex,
+        url: initUrl + '&page=' + pageIndex,
         pageIndex,
         dataIndexes: [0],
       });
