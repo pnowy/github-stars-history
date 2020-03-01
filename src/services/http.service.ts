@@ -12,7 +12,9 @@ const ACCESS_TOKEN = [
 const http = axios.create({
   headers: {
     Accept: 'application/vnd.github.v3.star+json',
-    Authorization: `token ${ACCESS_TOKEN[Math.floor(Math.random() * ACCESS_TOKEN.length)]}`,
+  },
+  params: {
+    access_token: ACCESS_TOKEN[Math.floor(Math.random() * ACCESS_TOKEN.length)],
   },
 });
 
