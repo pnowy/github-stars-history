@@ -2,6 +2,17 @@ import {Stack} from '@/models';
 
 const stacks: Stack[] = [
   {
+    id: 'kubernetes-configuration-management',
+    name: 'kubernetes configuration',
+    repos: [
+      'kubernetes-sigs/kustomize',
+      'helm/helm',
+      'ksonnet/ksonnet',
+      'google/jsonnet',
+    ],
+    predefined: true,
+  },
+  {
     id: 'javascript-frameworks',
     name: 'javascript frameworks',
     repos: [
