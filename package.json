@@ -16,7 +16,7 @@
     "firebase-encode": "^0.0.5",
     "highcharts": "^8.1.1",
     "html2canvas": "^1.0.0-rc.5",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "luxon": "^1.24.1",
     "vue": "^2.6.11",
     "vue-analytics": "^5.22.1",
