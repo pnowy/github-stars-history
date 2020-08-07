@@ -1,5 +1,14 @@
 #!/bin/sh
 
+echo "
+ -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  _   __ _        ___   _  __ __   ___        __
+ | | / /(_)___ _ / _ ) (_)/ // /  / _ \ ___  / /___  ___ _ ___ ___  ____
+ | |/ // // _  // _  |/ // // /  / , _// -_)/ // -_)/ _  /(_-</ -_)/ __/
+ |___//_/ \_,_//____//_//_//_/  /_/|_| \__//_/ \__/ \_,_//___/\__//_/
+ -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+"
+
 # retrieve branch name
 APPROVED_BRANCH="master"
 CURRENT_BRANCH=$(git branch | sed -n '/\* /s///p')
@@ -10,32 +19,22 @@ if [ "$CURRENT_BRANCH" != "$APPROVED_BRANCH" ]; then
 fi
 
 # retrieve the last commit on the branch
-VERSION=$(git describe --tags --match=v* --abbrev=0)
-echo "Version: $VERSION"
+CURRENT_TAG=$(git describe --tags --match=v* --abbrev=0)
+CURRENT_TAG_TMS=$(git log -1 --format=%ai v0010)
 
-# split into array
-#VERSION_BITS=(${VERSION//./ })
+CURRENT_VERSION_NUMBER=${CURRENT_TAG#v}
+NEW_VERSION_VERSION_NUMBER=$(expr $CURRENT_VERSION_NUMBER + 1)
+NEW_TAG=$(printf "v%04d" $NEW_VERSION_VERSION_NUMBER)
 
-#get number parts and increase last one by 1
-#VNUM1=${VERSION_BITS[0]}
-#VNUM2=${VERSION_BITS[1]}
-#VNUM3=${VERSION_BITS[2]}
-#VNUM3=$((VNUM3+1))
-
-#create new tag
-#NEW_TAG="$VNUM1.$VNUM2.$VNUM3"
-
-#echo "Updating $VERSION to $NEW_TAG"
-
-#get current hash and see if it already has a tag
-#GIT_COMMIT=`git rev-parse HEAD`
-#NEEDS_TAG=`git describe --contains $GIT_COMMIT`
-
-#only tag if no tag already (would be better if the git describe command above could have a silent option)
-#if [ -z "$NEEDS_TAG" ]; then
-#    echo "Tagged with $NEW_TAG (Ignoring fatal:cannot describe - this means commit is untagged) "
-#    git tag $NEW_TAG
-#    git push --tags
-#else
-#    echo "Already a tag on this commit"
-#fi
+echo "Current branch:          $CURRENT_BRANCH"
+echo "Latest released Version: $CURRENT_TAG ($CURRENT_TAG_TMS)"
+echo "The next Version:        $NEW_TAG"
+echo
+read -p "Do you want to proceed? The tag will be created and pushed [y]? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Creating the new tag ..."
+    git tag $NEW_TAG
+    echo "New tag '$NEW_TAG' has been created. Pushing the tag ..."
+    git push origin $NEW_TAG
+fi
