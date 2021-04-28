@@ -13,9 +13,9 @@ const http = axios.create({
   headers: {
     Accept: 'application/vnd.github.v3.star+json',
   },
-  params: {
-    access_token: ACCESS_TOKEN[Math.floor(Math.random() * ACCESS_TOKEN.length)],
-  },
+  // params: {
+  //   access_token: ACCESS_TOKEN[Math.floor(Math.random() * ACCESS_TOKEN.length)],
+  // },
 });
 
 export {http};
