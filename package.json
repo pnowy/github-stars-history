@@ -14,7 +14,7 @@
     "core-js": "^3.10.0",
     "firebase": "^7.24.0",
     "firebase-encode": "^0.0.5",
-    "highcharts": "^8.2.2",
+    "highcharts": "^9.0.0",
     "html2canvas": "^1.0.0-rc.7",
     "lodash": "^4.17.21",
     "luxon": "^1.26.0",
