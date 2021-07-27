@@ -92,6 +92,19 @@ const stacks: Stack[] = [
     ],
     predefined: true,
   },
+  {
+    id: 'screenshot-tools',
+    name: 'screenshot-tools',
+    repos: [
+      'flameshot-org/flameshot',
+      'ShareX/ShareX',
+      'ksnip/ksnip',
+      'olav-st/screencloud',
+      'jomo/imgur-screenshot',
+    ],
+    predefined: true,
+  },
+
 ];
 
 export default stacks;
