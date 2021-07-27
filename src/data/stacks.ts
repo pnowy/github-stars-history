@@ -63,6 +63,7 @@ const stacks: Stack[] = [
       'hexojs/hexo',
       'vuejs/vuepress',
       'nuxt/nuxt.js',
+      'getzola/zola',
     ],
     predefined: true,
   },
@@ -86,9 +87,24 @@ const stacks: Stack[] = [
       'Microsoft/vscode',
       'notepad-plus-plus/notepad-plus-plus',
       'syl20bnr/spacemacs',
+      'hlissner/doom-emacs',
+      'neovim/neovim',
     ],
     predefined: true,
   },
+  {
+    id: 'screenshot-tools',
+    name: 'screenshot-tools',
+    repos: [
+      'flameshot-org/flameshot',
+      'ShareX/ShareX',
+      'ksnip/ksnip',
+      'olav-st/screencloud',
+      'jomo/imgur-screenshot',
+    ],
+    predefined: true,
+  },
+
 ];
 
 export default stacks;
