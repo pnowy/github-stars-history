@@ -14,7 +14,7 @@ With this project you could observe and monitor specific github repos and simply
 ## I would like to add new predefined repo or stack
 
 If you would like to extend current predefined stack or create new stack create pull request to the 
-[stacks.js](https://github.com/pnowy/github-stars-history/blob/master/src/data/stacks.js) file.
+[stacks.ts](https://github.com/pnowy/github-stars-history/blob/master/src/data/stacks.ts) file.
 
 For new stack just add new object within array (consistent with specification of other stacks) and for new repo just
 add new repo name (must have owner and repo name, ie. `pnowy/github-stars-history`).
