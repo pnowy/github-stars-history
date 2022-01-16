@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "buefy": "^0.9.5",
     "core-js": "^3.10.0",
     "firebase": "^7.24.0",
