@@ -57,7 +57,7 @@ const stacks: Stack[] = [
     name: 'static site generators',
     repos: [
       'jekyll/jekyll',
-      'zeit/next.js',
+      'vercel/next.js',
       'gohugoio/hugo',
       'gatsbyjs/gatsby',
       'hexojs/hexo',
