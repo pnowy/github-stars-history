@@ -34,7 +34,7 @@
     "@types/luxon": "^1.26.2",
     "@vue/cli-plugin-babel": "^4.5.12",
     "@vue/cli-plugin-typescript": "^4.5.12",
-    "@vue/cli-service": "^4.5.12",
+    "@vue/cli-service": "^5.0.8",
     "sass": "^1.32.8",
     "sass-loader": "^8.0.2",
     "typescript": "^3.9.9",
