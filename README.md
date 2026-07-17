@@ -1,5 +1,7 @@
 # Github star history
 
+> **⚠️ This repository is archived.** It is no longer actively developed, but it remains fully functional and can still be used in your projects. Feel free to **fork** the repository if you'd like to continue its development or adapt it to your needs.
+
 The missing github star history!
 
 ![Demo](demo.gif)
